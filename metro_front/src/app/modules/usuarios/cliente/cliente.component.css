@@ -1,0 +1,42 @@
+.example-spacer {
+    flex: 1 1 auto;
+}
+.title{
+    padding-left: 45%;
+}
+.title2{
+    position: relative;
+    margin-left: 35%;
+}
+.mat-form-field{
+    margin-left: 1.5%;
+    width: 30%;
+}
+.example-card{
+    width: 97%; 
+    margin: 1%;
+}
+.busqueda{
+    width: 70%;
+}
+
+.banner{
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: #F5F5F5;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../../../../assets/img/banner-propiedad-1.jpg');
+  }
+
+  /*grid*/
+.grid-container {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	padding: 10px;
+  }
+  .grid-item {
+	padding: 20px;
+	font-size: 30px;
+  }

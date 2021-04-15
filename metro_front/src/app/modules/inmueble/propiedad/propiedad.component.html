@@ -1,0 +1,1499 @@
+<div>
+    <section *ngIf="vistaEsp==false && vistaEspSinLog==false" class="banner">
+        <app-header></app-header>
+    </section>
+    <section *ngIf="vistaEsp==true || vistaEspSinLog==true" class="banner-esp" style="background-image: url({{propiedadVista.foto}});">
+        <app-header></app-header>
+    </section>
+    <div *ngIf="authService.isUserLoggedIn()">
+        <div *ngIf="!formAct">
+            <mat-toolbar>
+                <button mat-button (click)="CambiarVista()">Cambiar Vista
+                    <mat-icon>autorenew</mat-icon>
+                </button>
+                <span class="title">PROPIEDADES</span>
+                <span class="example-spacer"></span>
+                <button mat-button (click)="Agregar()">Agregar
+                    <mat-icon>add_to_photos</mat-icon>
+                </button>
+            </mat-toolbar>
+            <div *ngIf="!vistaEsp">
+                <mat-card class="filtros">
+                    <div class="filtros-basicos">
+                        <h3 style="text-align: center;">FILTROS BASICOS</h3>
+                        <div class="row">
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Filtro por Alquiler/Venta</mat-label>
+                                    <mat-select [(ngModel)]="filtroEstado" multiple="multiple">
+                                        <mat-option *ngFor="let est of estados" [value]="est">{{est.descripcion}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Filtro por Tipo</mat-label>
+                                    <mat-select [(ngModel)]="filtroTipo" multiple="multiple">
+                                        <mat-option *ngFor="let est of tipos" [value]="est">{{est.descripcion}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Filtro por Ubicacion</mat-label>
+                                    <mat-select [(ngModel)]="filtroUbicacion" multiple="multiple">
+                                        <mat-option *ngFor="let est of ubicaciones" [value]="est">{{est.descripcion}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Moneda</mat-label>
+                                        <mat-select [(ngModel)]="filtroTipoMonedaMenor">
+                                            <mat-option *ngFor="let est of monedas" [value]="est">{{est.simbolo}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Precio Minimo</mat-label>
+                                        <input type="number" matInput [(ngModel)]="precioMenor">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Moneda</mat-label>
+                                    <mat-select [(ngModel)]="filtroTipoMonedaMayor">
+                                        <mat-option *ngFor="let est of monedas" [value]="est">{{est.simbolo}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Precio Maximo</mat-label>
+                                    <input type="number" matInput [(ngModel)]="precioMayor">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filtros-avanzados">
+                        <h3 style="text-align: center;">FILTROS AVANZADOS</h3>
+                        <div class="row">
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Dormitorios</mat-label>
+                                    <mat-select [(ngModel)]="canDormitorios" multiple="multiple">
+                                        <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Baños</mat-label>
+                                    <mat-select [(ngModel)]="canBanios" multiple="multiple">
+                                        <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Cocheras</mat-label>
+                                    <mat-select [(ngModel)]="canCocheras" multiple="multiple">
+                                        <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Area minima m2</mat-label>
+                                    <input type="number" matInput [(ngModel)]="areaMinima">
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Area maxima m2</mat-label>
+                                    <input type="number" matInput [(ngModel)]="areaMaxima">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="height: 20px;"></div>
+                    <div style="text-align: center;">
+                        <button mat-button (click)="filtro()">Aplicar Filtros
+                            <mat-icon>filter_alt</mat-icon>
+                        </button>
+                        <button mat-button (click)="limpiarfiltros()">Borrar Filtros
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </mat-card>
+                <br><br>
+                <div *ngIf="vistaTabla">
+                    <mat-card class="tabla-propiedades">
+                        <mat-form-field class="mat-form-field-bus">
+                            <mat-label>Buscar por nombre de propiedad</mat-label>
+                            <input matInput (keyup)="applyFilter($event)" #input>
+                        </mat-form-field>
+                        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+                            <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </th>
+                                <td mat-cell *matCellDef="let element"> {{element[column].descripcion}}</td>
+                            </ng-container>
+                            <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                            <ng-container matColumnDef="expandedDetail">
+                                <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+                                    <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-sm">
+                                                    <img mat-card-image src={{element.foto}} alt="Photo" style="max-width: 400px;" (click)="VistaEspecifica(element)">
+                                                </div>
+                                                <div class="col-sm">
+                                                    Titulo: {{element.titulo}}
+                                                    <br> Estado: {{element.estado.descripcion}}
+                                                    <br> Tipo:{{element.tipo.descripcion}}
+                                                    <br> Ubicacion:{{element.ubicacion.descripcion}}
+                                                    <br> Condicion:{{element.condicion.descripcion}}
+                                                    <br><br><br><br><br>
+                                                    <div *ngIf="propiedadVista.agente.idAgente == loginservice.agente.idAgente || loginservice.agente.permisosPerfil=='administrador'">
+                                                        <button mat-button (click)="AsignarFotos(element)" style="background-color: palevioletred;">Asignar Fotos</button>&nbsp;
+                                                        <button mat-button (click)="Editar(element)" style="background-color: yellow;">Editar</button>&nbsp;
+                                                        <button mat-button (click)="Eliminar(element)" style="background-color: red; color: white;">Eliminar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                            <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row" [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element">
+                            </tr>
+                            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+                            <!-- Row shown when there is no matching data. -->
+                            <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="4">No existen coincidencias para el valor ingresado: "{{input.value}}"</td>
+                            </tr>
+                        </table>
+                    </mat-card>
+                </div>
+                <div *ngIf="!vistaTabla">
+                    <div class="grid-container" name="lista-propiedades">
+                        <div class="grid-item" *ngFor="let prop of dataSource.data | paginate: page_size: page_number">
+                            <mat-card class="example-card mat-elevation-z8" style="border-radius: 40px;" (click)="VistaEspecifica(prop)">
+                                <img mat-card-image src={{prop.foto}} alt="Photo" style="size: cover; max-height: 50%;">
+                                <mat-card-content>
+                                    <button mat-raised-button style="background-color: black; color: white; border-radius: 50px;">{{prop.estado.descripcion}}</button> &nbsp; &nbsp;
+                                    <button mat-raised-button style="background-color: rgb(202, 97, 12); color: white; border-radius: 50px;">{{prop.tipo.descripcion}}</button>
+                                    <br> <br>
+                                    <h1><strong>{{prop.titulo}}</strong></h1>
+                                    <h2>
+                                        <strong>
+                                            <mat-icon>crop_square</mat-icon> {{prop.tamanoArea}} m<sup>2</sup> &nbsp; &nbsp;
+                                            <mat-icon>king_bed</mat-icon> {{prop.dormitorios}} &nbsp; &nbsp;
+                                            <mat-icon>bathtub</mat-icon> {{prop.banios}} &nbsp; &nbsp;
+                                            <mat-icon>directions_car</mat-icon> {{prop.cocheras}} &nbsp; &nbsp;
+                                        </strong>
+                                    </h2>
+                                    <div class="wrapper">
+                                        <p class="demo-1">{{prop.descripcion}}</p>
+                                    </div>
+                                    <h1>
+                                        <strong>
+                                            {{prop.moneda.simbolo}} {{prop.precio}} &nbsp;&nbsp;&nbsp;&nbsp; <mat-icon>room
+                                            </mat-icon> {{prop.ubicacion.descripcion}}
+                                        </strong>
+                                    </h1>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                    </div>
+                    <div>
+                        <mat-paginator [length]="dataSource.data.length" [pageSize]="page_size" [pageSizeOptions]="[2, 5, 10, 25, 100]" (page)="handlePage($event)" showFirstLastButtons>
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="vistaEsp">
+                <mat-card class="example-card">
+                    <br><br>
+                    <h1 style="font-size: 60px;"><strong>{{propiedadVista.titulo}}</strong></h1><br>
+                    <h2>
+                        <strong>
+                            <mat-icon>crop_square</mat-icon> {{propiedadVista.tamanoArea}} m<sup>2</sup> &nbsp; &nbsp;
+                            <mat-icon>king_bed</mat-icon> {{propiedadVista.dormitorios}} &nbsp; &nbsp;
+                            <mat-icon>bathtub</mat-icon> {{propiedadVista.banios}} &nbsp; &nbsp;
+                            <mat-icon>directions_car</mat-icon> {{propiedadVista.cocheras}} &nbsp; &nbsp;
+                        </strong>
+                    </h2>
+                    <h2>{{propiedadVista.direccion}} , {{propiedadVista.ubicacion.descripcion}}</h2>
+                    <div class="row">
+                        <div class="col">
+                            <mat-card style="margin: 5px;">
+                                <img mat-card-image src={{propiedadVista.foto}} style="max-width: 100%; padding: 10px;">
+                            </mat-card>
+                            <div class="row">
+                                <div class="col-md-4" *ngFor="let detalle of detalles">
+                                    <mat-card style="margin: 5px;">
+                                        <img mat-card-image src={{detalle.foto}} style="max-width: 100%; max-height: 100%; padding: 5px;">
+                                    </mat-card>
+                                </div>
+                            </div>
+                            <div style="height: 20px;"></div>
+                            <div>
+                                <h2>Descripcion: </h2>
+                                <h3>{{propiedadVista.descripcion}}</h3>
+                            </div>
+                            <div>
+                                <h2>Comentario: </h2>
+                                <h3>{{propiedadVista.comentario}}</h3>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <mat-card-content>
+                                <mat-card class="precios-card">
+                                    <div class="row">
+                                        <div class="col">
+                                            <mat-card>
+                                                <h2>Precio de {{propiedadVista.estado.descripcion}}</h2>
+                                                <h3>{{propiedadVista.moneda.simbolo}} {{propiedadVista.precio}}</h3>
+                                            </mat-card>
+                                        </div>
+                                        <div class="col">
+                                            <mat-card>
+                                                <h2>Precio de mantenimiento</h2>
+                                                <h3>{{propiedadVista.monedamantenimiento.simbolo}} {{propiedadVista.mantenimiento}}</h3>
+                                            </mat-card>
+                                        </div>
+                                    </div>
+                                </mat-card>
+                                <mat-list class="lista-datos-propiedad">
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <h3><strong>Datos Generales</strong></h3>
+                                            <mat-list-item><span>Area Total:</span> {{propiedadVista.tamanoArea}}m2</mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Area Construida:</span> {{propiedadVista.areaConstruida}}m2</mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Aires:</span> {{propiedadVista.areaAires}}m2</mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Area Ocupada:</span> {{propiedadVista.areaOcupada}}m2</mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Fecha de Ingreso</span>
+                                                <mat-icon>calendar_today</mat-icon>: {{propiedadVista.fechaIngreso | date}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Fecha de Actualizacion</span>
+                                                <mat-icon>calendar_today</mat-icon>: {{propiedadVista.fechaIngreso | date}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div class="col-sm">
+                                            <h3><strong>Datos Especificos</strong></h3>
+                                            <mat-list-item><span>Dormitorios</span>
+                                                <mat-icon>king_bed</mat-icon>: {{propiedadVista.dormitorios}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Baños</span>
+                                                <mat-icon>bathtub</mat-icon>: {{propiedadVista.banios}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Cocheras</span>
+                                                <mat-icon>directions_car</mat-icon>: {{propiedadVista.cocheras}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <div *ngIf="propiedadVista.tipo.tipo == 'casa' ">
+                                                <mat-list-item><span>Cantidad de pisos de la casa</span>: {{propiedadVista.cantidadPisos}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                            </div>
+                                            <div *ngIf="propiedadVista.tipo.tipo == 'departamento' ">
+                                                <mat-list-item><span>Distribucion</span>: {{propiedadVista.distribucion}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Piso en el que se encuentra</span>: {{propiedadVista.pisoPosicion}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                            </div>
+                                            <div *ngIf="propiedadVista.tipo.tipo == 'local-comercial' ">
+                                                <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                            </div>
+                                            <div *ngIf="propiedadVista.tipo.tipo == 'local-industrial' ">
+                                                <mat-list-item><span>Ambientes</span>: {{propiedadVista.ambientes}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Cantidad de Oficinas</span>: {{propiedadVista.cantidadOficinas}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Techo Tijeral</span>: {{propiedadVista.techoTijeral}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Patio de Maniobras</span>: {{propiedadVista.patioManiobras}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Nave Industrial</span>: {{propiedadVista.naveIndustrial}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                            </div>
+                                            <div *ngIf="propiedadVista.tipo.tipo == 'terreno' ">
+                                                <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Linderos Izquierda</span>: {{propiedadVista.linderosIzquierda}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Linderos Derecha</span>: {{propiedadVista.linderosDerecha}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Perimetro</span>: {{propiedadVista.perimetro}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Frontis</span>: {{propiedadVista.frontis}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Zonificacion</span>: {{propiedadVista.zonificacion}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                            </div>
+                                            <div *ngIf="propiedadVista.tipo.tipo == 'oficina' ">
+                                                <mat-list-item><span>Ambientes</span>: {{propiedadVista.ambientes}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Oficinas Privadas</span>: {{propiedadVista.oficinasPrivadas}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Salas de Reunion</span>: {{propiedadVista.salasReunion}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Estado de Oficina</span>: {{propiedadVista.estadoOficina}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                                <mat-list-item><span>Zonificacion</span>: {{propiedadVista.zonificacion}} <br></mat-list-item>
+                                                <mat-divider></mat-divider>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-list>
+                                <br>
+                                <h2>Contacto</h2>
+                                <mat-card class="agente-card" style="margin: 10px;">
+                                    <mat-card-header>
+                                        <mat-card-title>Agente: {{propiedadVista.agente.nombre}}</mat-card-title>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <mat-card>
+                                                    <img mat-card-image src={{propiedadVista.agente.imagen}} alt="Photo" style="width: 250px; height: 250px; padding: 10px;">
+                                                </mat-card>
+                                            </div>
+                                            <div class="col-sm">
+                                                <mat-list>
+                                                    <mat-list-item><strong>Nombre:</strong> {{propiedadVista.agente.nombre}} </mat-list-item>
+                                                    <mat-list-item><strong>Apellido:</strong> {{propiedadVista.agente.apellido}}</mat-list-item>
+                                                    <mat-list-item><strong>Celular:</strong> {{propiedadVista.agente.celular}}</mat-list-item>
+                                                    <mat-list-item><strong>url Web:</strong> {{propiedadVista.agente.urlWeb}}</mat-list-item>
+                                                </mat-list>
+                                            </div>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                                <mat-card class="cliente-card">
+                                    <mat-card-header>
+                                        <mat-card-title>Propietario: {{propiedadVista.cliente.nombre}} {{propiedadVista.cliente.apellido}}</mat-card-title>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-sm">
+                                                    <mat-card>
+                                                        <img mat-card-image src={{propiedadVista.cliente.foto}} alt="Photo" style="width: 250px; height: 250px; padding: 10px;">
+                                                    </mat-card>
+                                                </div>
+                                                <div class="col-sm">
+                                                    <mat-list>
+                                                        <mat-list-item><strong>Nombre:</strong> {{propiedadVista.cliente.nombre}} </mat-list-item>
+                                                        <mat-list-item><strong>Apellido:</strong> {{propiedadVista.cliente.apellido}}</mat-list-item>
+                                                        <mat-list-item><strong>Celular:</strong> {{propiedadVista.cliente.telefono}}</mat-list-item>
+                                                        <mat-list-item><strong>Correo:</strong> {{propiedadVista.cliente.correo}}</mat-list-item>
+                                                        <mat-list-item><strong>Tipo Cliente:</strong> {{propiedadVista.cliente.estadoCliente}}</mat-list-item>
+                                                    </mat-list>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </mat-card-content>
+                                </mat-card>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button mat-button (click)="Editar(propiedadVista)" style="background-color: yellow;">Editar</button>&nbsp;
+                                <button mat-button (click)="Eliminar(propiedadVista)" style="background-color: red; color: white;">Eliminar</button>&nbsp;
+                                <button mat-button (click)="SalirVista()">Regresar</button>
+                            </mat-card-actions>
+                        </div>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+        <div *ngIf="formAct">
+            <mat-toolbar>
+                <button mat-button (click)="Regresar()">
+                    <mat-icon>undo</mat-icon>Regresar
+                </button>
+                <span>AGREGAR UNA PROPIEDAD</span>
+            </mat-toolbar>
+            <mat-card class="formu">
+                <div *ngIf="formGeneral">
+                    <h4>Datos generales del inmueble</h4>
+                    <mat-progress-bar mode="indeterminate" *ngIf="isProgress"></mat-progress-bar>
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Titulo</mat-label>
+                        <input type="text" matInput name="titulo" #titulo="ngModel" [(ngModel)]="propiedad.titulo" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Direccion</mat-label>
+                        <input type="text" matInput name="direccion" #direccion="ngModel" [(ngModel)]="propiedad.direccion" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Agente</mat-label>
+                        <mat-select name="agente" #agente="ngModel" [(ngModel)]="propiedad.agente.idAgente">
+                            <mat-option *ngFor="let est of agentes" [value]="est.idAgente">{{est.nombre}} {{est.apellido}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Cliente Propietario</mat-label>
+                        <mat-select name="cliente" #cliente="ngModel" [(ngModel)]="propiedad.cliente.idCliente">
+                            <mat-option *ngFor="let est of clientes" [value]="est.idCliente">{{est.nombre}} {{est.apellido}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="form1">
+                        <mat-label>Descripcion</mat-label>
+                        <textarea type="text" style="height: 200px;" matInput name="descripcion" #descripcion="ngModel" [(ngModel)]="propiedad.descripcion"></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Tipo</mat-label>
+                        <mat-select name="tipo" #tipo="ngModel" [(ngModel)]="selected" [(ngModel)]="propiedad.tipo.idTipo">
+                            <mat-option *ngFor="let est of tipos" [value]="est.idTipo">{{est.descripcion}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Condicion</mat-label>
+                        <mat-select name="condicion" #condicion="ngModel" [(ngModel)]="propiedad.condicion.idCondicion" disabled>
+                            <mat-option *ngFor="let tip of condiciones" [value]="tip.idCondicion">{{tip.descripcion}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Estado</mat-label>
+                        <mat-select name="estado" #estado="ngModel" [(ngModel)]="propiedad.estado.idEstado">
+                            <mat-option *ngFor="let tip of estados" [value]="tip.idEstado">{{tip.descripcion}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Ubicacion</mat-label>
+                        <mat-select name="ubicacion" #ubicacion="ngModel" [(ngModel)]="propiedad.ubicacion.idUbicacion">
+                            <mat-option *ngFor="let tip of ubicaciones" [value]="tip.idUbicacion">{{tip.descripcion}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Area de la Propiedad(m2)</mat-label>
+                        <input type="text" matInput name="area" #titareaulo="ngModel" [(ngModel)]="propiedad.tamanoArea" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="form4">
+                        <mat-label>Año de construccion</mat-label>
+                        <input type="text" matInput name="anioConstru" #anioConstru="ngModel" [(ngModel)]="propiedad.anioConstruccion" required>
+                    </mat-form-field>
+
+                    <mat-form-field class="example-full-width" class="form4">
+                        <mat-label>Fecha de Ingreso</mat-label>
+                        <input matInput [matDatepicker]="picker" [(ngModel)]="propiedad.fechaIngreso" disabled>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-form-field class="example-full-width" class="form4">
+                        <mat-label>Fecha de Actualizacion</mat-label>
+                        <input matInput [matDatepicker]="picker2" [(ngModel)]="propiedad.fechaActualizacion" datetime="dd-MM-yyyy" disabled>
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                    <h4>Precio del inmueble</h4>
+                    <mat-form-field appearance="fill" class="form2">
+                        <mat-label>Moneda</mat-label>
+                        <mat-select name="moneda" #moneda="ngModel" [(ngModel)]="propiedad.moneda.idMoneda">
+                            <mat-option *ngFor="let per of monedas" [value]="per.idMoneda">
+                                {{per.moneda}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="form2">
+                        <mat-label>Cantidad</mat-label>
+                        <input type="text" matInput name="precio" #precio="ngModel" [(ngModel)]="propiedad.precio">
+                    </mat-form-field>
+                    <div style="height: 20px;"></div>
+                    <h4>Precio del mantenimiento del inmueble</h4>
+                    <mat-form-field appearance="fill" class="form2">
+                        <mat-label>Moneda</mat-label>
+                        <mat-select name="monedamantenimiento" #monedamantenimiento="ngModel" [(ngModel)]="propiedad.monedamantenimiento.idMoneda">
+                            <mat-option *ngFor="let per of monedas" [value]="per.idMoneda">
+                                {{per.moneda}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="form2">
+                        <mat-label>Cantidad</mat-label>
+                        <input type="text" matInput name="mantenimiento" #mantenimiento="ngModel" [(ngModel)]="propiedad.mantenimiento">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="form1">
+                        <mat-label>Comentario</mat-label>
+                        <textarea type="text" style="height: 200px;" matInput name="comentario" #comentario="ngModel" [(ngModel)]="propiedad.comentario"></textarea>
+                    </mat-form-field>
+                    <button mat-button (click)="Regresar()" style="margin-left: 3%; width: 45%; background-color: red; color: white;">
+                        <mat-icon>west</mat-icon>Regresar
+                    </button>
+                    <button mat-button (click)="FormMedia()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                        <mat-icon>add</mat-icon>Siguiente
+                    </button>
+                </div>
+                <div *ngIf="formMedia">
+                    <h4>Datos Multimedia</h4>
+                    <h4>Foto principal</h4>
+                    <div *ngIf="editar">
+                        <span>Foto</span>
+                        <br>
+                        <img src={{propiedad.foto}} style="max-width: 500px;">
+                    </div>
+                    <div style="height: 20px;"></div>
+                    <div>
+
+                        <mat-progress-bar mode="indeterminate" *ngIf="isProgress"></mat-progress-bar>
+                        <form (ngSubmit)="onUpload()" novalidate enctype="multipart/form-data" class="formedia">
+                            <div class="custom-file" *ngIf="mostrarFoto">
+                                <input type="file" class="custom-file-input" id="imagen" #imagenInputFile (change)="onFileChange($event)" accept="image/png, image/jpeg, image/gif">
+                                <label class="custom-file-label" for="imagen">Elige una imagen</label>
+                            </div>
+                            <div *ngIf="imagen" class="mt-5">
+                                <h5>Vista Previa:</h5>
+                                <div>
+                                    <img class="image-thumbnail" style="max-width: 100%" [src]="imagenMin">
+                                </div>
+                            </div>
+                            <div>
+                                <button mat-button type="submit" [disabled]="!imagen">
+                                    <mat-icon>upload</mat-icon>Subir
+                                </button>
+                                <button mat-button (click)="reset()" [disabled]="!imagen">
+                                    <mat-icon>cached</mat-icon>Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div style="height: 40px;"></div>
+                    <h4>Video de la propiedad</h4>
+                    <div *ngIf="editar">
+                        <span>Video</span>
+                        <br>
+                        <video controls>
+                            <source src={{propiedad.video}} type="video/mp4">
+                        </video>
+                    </div>
+                    <div style="height: 20px;"></div>
+                    <div>
+                        <mat-progress-bar mode="indeterminate" *ngIf="isProgress"></mat-progress-bar>
+                        <form (ngSubmit)="onUploadMultimedia()" novalidate enctype="multipart/form-data" class="formedia">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="multimedia" #multimediaInputFile (change)="onFileChangeMultimedia($event)">
+                                <label class="custom-file-label" for="multimedia">Elige un multimedia</label>
+                            </div>
+                            <div *ngIf="multimedia" class="mt-5">
+                                <h5>Vista Previa:</h5>
+                                <div>
+                                    <img class="document-thumbnail" style="max-width: 100%" [src]="multimediaMin">
+                                </div>
+                            </div>
+                            <button mat-button type="submit" [disabled]="!multimedia">
+                                <mat-icon>upload</mat-icon>Subir
+                            </button>
+                            <button mat-button (click)="resetMultimedia()" [disabled]="!multimedia">
+                                <mat-icon>cached</mat-icon>Reset
+                            </button>
+                        </form>
+                    </div>
+                    <div style="height: 40px;"></div>
+                    <button mat-button (click)="FormGeneral()" style="margin-left: 3%; width: 45%; background-color: yellow;">
+                        <mat-icon>west</mat-icon>Atras
+                    </button>
+                    <button mat-button (click)="FormEspe()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                        <mat-icon>add</mat-icon>Siguiente
+                    </button>
+                </div>
+                <div *ngIf="formEspe">
+                    <mat-progress-bar mode="indeterminate" *ngIf="isProgress"></mat-progress-bar>
+                    <div *ngIf="mostrarFormuCasa">
+                        <span>CASA</span>
+                        <br>
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Cantidad de Pisos</mat-label>
+                                <mat-select name="cantidadPisos" #cantidadPisos="ngModel" [(ngModel)]="propiedad.cantidadPisos">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Dormitorios</mat-label>
+                                <mat-select name="dormitorios" #dormitorios="ngModel" [(ngModel)]="propiedad.dormitorios">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Baños</mat-label>
+                                <mat-select name="banios" #banios="ngModel" [(ngModel)]="propiedad.banios">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Cocheras</mat-label>
+                                <mat-select name="cocheras" #cocheras="ngModel" [(ngModel)]="propiedad.cocheras">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Cuartos de Servicio</mat-label>
+                                <mat-select name="cuartosServicio" #cuartosServicio="ngModel" [(ngModel)]="propiedad.cuartosServicio">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Baños de Servicio</mat-label>
+                                <mat-select name="baniosServicio" #baniosServicio="ngModel" [(ngModel)]="propiedad.baniosServicio">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div *ngIf="mostrarFormuDepartamento">
+                        <span>DEPARTAMENTO</span>
+                        <br>
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Distribucion</mat-label>
+                                <mat-select name="distribucion" #distribucion="ngModel" [(ngModel)]="propiedad.distribucion">
+                                    <mat-option *ngFor="let est of distribuciones" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Dormitorios</mat-label>
+                                <mat-select name="dormitorios" #dormitorios="ngModel" [(ngModel)]="propiedad.dormitorios">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Baños</mat-label>
+                                <mat-select name="banios" #banios="ngModel" [(ngModel)]="propiedad.banios">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="fill" class="form4">
+                                <mat-label>Cocheras</mat-label>
+                                <mat-select name="cocheras" #cocheras="ngModel" [(ngModel)]="propiedad.cocheras">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form4">
+                                <mat-label>Cuartos de Servicio</mat-label>
+                                <mat-select name="cuartosServicio" #cuartosServicio="ngModel" [(ngModel)]="propiedad.cuartosServicio">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form4">
+                                <mat-label>Baños de Servicio</mat-label>
+                                <mat-select name="baniosServicio" #baniosServicio="ngModel" [(ngModel)]="propiedad.baniosServicio">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form4">
+                                <mat-label>Piso en el que se encuentra</mat-label>
+                                <mat-select name="pisoPosicion" #pisoPosicion="ngModel" [(ngModel)]="propiedad.pisoPosicion">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div *ngIf="mostrarFormuLocalComercial">
+                        <span>LOCAL COMERCIAL</span>
+                        <br>
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Linderos Frente (m2)</mat-label>
+                                <input matInput name="linderosFrente" #linderosFrente="ngModel" [(ngModel)]="propiedad.linderosFrente" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Linderos Fondo (m2)</mat-label>
+                                <input matInput name="linderosFondo" #linderosFondo="ngModel" [(ngModel)]="propiedad.linderosFondo" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Baños</mat-label>
+                                <mat-select name="banios" #banios="ngModel" [(ngModel)]="propiedad.banios">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="fill" class="form2">
+                                <mat-label>Depositos</mat-label>
+                                <mat-select name="depositos" #depositos="ngModel" [(ngModel)]="propiedad.depositos">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form2">
+                                <mat-label>Cuartos de Servicio</mat-label>
+                                <mat-select name="cuartosServicio" #cuartosServicio="ngModel" [(ngModel)]="propiedad.cuartosServicio">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div *ngIf="mostrarFormuLocalIndustrial">
+                        <span>LOCAL INDUSTRIAL</span>
+                        <br>
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Ambientes</mat-label>
+                                <mat-select name="ambientes" #ambientes="ngModel" [(ngModel)]="propiedad.ambientes">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Oficinas en Local</mat-label>
+                                <mat-select name="cantidadOficinas" #cantidadOficinas="ngModel" [(ngModel)]="propiedad.cantidadOficinas">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Baños</mat-label>
+                                <mat-select name="banios" #banios="ngModel" [(ngModel)]="propiedad.banios">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Linderos Frente (m2)</mat-label>
+                                <input matInput name="linderosFrente" #linderosFrente="ngModel" [(ngModel)]="propiedad.linderosFrente" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Linderos Fondo (m2)</mat-label>
+                                <input matInput name="linderosFondo" #linderosFondo="ngModel" [(ngModel)]="propiedad.linderosFondo" required>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Techo Tijeral (m2)</mat-label>
+                                <input matInput name="techoTijeral" #techoTijeral="ngModel" [(ngModel)]="propiedad.techoTijeral" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Patio Maniobras (m2)</mat-label>
+                                <input matInput name="patioManiobras" #patioManiobras="ngModel" [(ngModel)]="propiedad.patioManiobras" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Nave Industrial (m2)</mat-label>
+                                <input matInput name="naveIndustrial" #naveIndustrial="ngModel" [(ngModel)]="propiedad.naveIndustrial" required>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="fill" class="form2">
+                                <mat-label>Depositos</mat-label>
+                                <mat-select name="depositos" #depositos="ngModel" [(ngModel)]="propiedad.depositos">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form2">
+                                <mat-label>Cocheras</mat-label>
+                                <mat-select name="cocheras" #cocheras="ngModel" [(ngModel)]="propiedad.cocheras">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div *ngIf="mostrarFormuTerreno">
+                        <span>TERRENO</span>
+                        <br>
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Linderos Frente (m2)</mat-label>
+                                <input matInput name="linderosFrente" #linderosFrente="ngModel" [(ngModel)]="propiedad.linderosFrente" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Linderos Fondo (m2)</mat-label>
+                                <input matInput name="linderosFondo" #linderosFondo="ngModel" [(ngModel)]="propiedad.linderosFondo" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Linderos Izquierda (m2)</mat-label>
+                                <input matInput name="linderosIzquierda" #linderosIzquierda="ngModel" [(ngModel)]="propiedad.linderosIzquierda" required>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Linderos Derecha (m2)</mat-label>
+                                <input matInput name="linderosDerecha" #linderosDerecha="ngModel" [(ngModel)]="propiedad.linderosDerecha" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Perimetro (m2)</mat-label>
+                                <input matInput name="perimetro" #perimetro="ngModel" [(ngModel)]="propiedad.perimetro" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Frontis (m2)</mat-label>
+                                <input matInput name="frontis" #frontis="ngModel" [(ngModel)]="propiedad.frontis" required>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill" class="form2">
+                                <mat-label>Zonificacion</mat-label>
+                                <input matInput name="zonificacion" #zonificacion="ngModel" [(ngModel)]="propiedad.zonificacion">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div *ngIf="mostrarFormuOficina">
+                        <span>OFICINA</span>
+                        <br>
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Ambientes</mat-label>
+                                <mat-select name="ambientes" #ambientes="ngModel" [(ngModel)]="propiedad.ambientes">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Oficinas Privadas en Local</mat-label>
+                                <mat-select name="oficinasPrivadas" #oficinasPrivadas="ngModel" [(ngModel)]="propiedad.oficinasPrivadas">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Salas de reunion en Local</mat-label>
+                                <mat-select name="salasReunion" #salasReunion="ngModel" [(ngModel)]="propiedad.salasReunion">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Baños</mat-label>
+                                <mat-select name="banios" #banios="ngModel" [(ngModel)]="propiedad.banios">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Cocheras</mat-label>
+                                <mat-select name="cocheras" #cocheras="ngModel" [(ngModel)]="propiedad.cocheras">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form3">
+                                <mat-label>Depositos</mat-label>
+                                <mat-select name="depositos" #depositos="ngModel" [(ngModel)]="propiedad.depositos">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div>
+                            <mat-form-field appearance="fill" class="form2">
+                                <mat-label>Estado de Oficina</mat-label>
+                                <mat-select name="estadoOficina" #estadoOficina="ngModel" [(ngModel)]="propiedad.estadoOficina">
+                                    <mat-option *ngFor="let est of estOficinas" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form2">
+                                <mat-label>Zonificacion</mat-label>
+                                <input matInput name="zonificacion" #zonificacion="ngModel" [(ngModel)]="propiedad.zonificacion">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div>
+                        <button mat-button (click)="FormMedia()" style="margin-left: 3%; width: 45%; background-color: yellow;">
+                            <mat-icon>west</mat-icon>Atras
+                        </button>
+                        <button *ngIf="!editar" mat-button (click)="Guardar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                            <mat-icon>add</mat-icon>Guardar
+                        </button>
+                        <button *ngIf="editar" mat-button (click)="Actualizar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                            <mat-icon>add</mat-icon>Actualizar
+                        </button>
+                    </div>
+                </div>
+                <div *ngIf="formListaFotos">
+                    <div>
+                        <mat-card>
+                            <app-detalle-fotos-propiedad [idPropiedad]="propiedad.idPropiedad"></app-detalle-fotos-propiedad>
+                        </mat-card>
+                    </div>
+                    <div style="height: 20px;"></div>
+                    <div>
+                        <button mat-button (click)="Regresar()" style="margin-left: 3%; width: 45%; background-color: green; color: white">Listo</button>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+    <div *ngIf="!authService.isUserLoggedIn()">
+        <mat-toolbar>
+            <span class="title">PROPIEDADES</span>
+        </mat-toolbar>
+        <div *ngIf="!vistaEspSinLog">
+            <mat-card class="filtros">
+                <div class="filtros-basicos">
+                    <h3 style="text-align: center;">FILTROS BASICOS</h3>
+                    <div class="row">
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Filtro por Alquiler/Venta</mat-label>
+                                <mat-select [(ngModel)]="filtroEstado" multiple="multiple">
+                                    <mat-option *ngFor="let est of estados" [value]="est">{{est.descripcion}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Filtro por Tipo</mat-label>
+                                <mat-select [(ngModel)]="filtroTipo" multiple="multiple">
+                                    <mat-option *ngFor="let est of tipos" [value]="est">{{est.descripcion}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Filtro por Ubicacion</mat-label>
+                                <mat-select [(ngModel)]="filtroUbicacion" multiple="multiple">
+                                    <mat-option *ngFor="let est of ubicaciones" [value]="est">{{est.descripcion}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Moneda</mat-label>
+                                    <mat-select [(ngModel)]="filtroTipoMonedaMenor">
+                                        <mat-option *ngFor="let est of monedas" [value]="est">{{est.simbolo}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Precio Minimo</mat-label>
+                                    <input type="number" matInput [(ngModel)]="precioMenor">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Moneda</mat-label>
+                                <mat-select [(ngModel)]="filtroTipoMonedaMayor">
+                                    <mat-option *ngFor="let est of monedas" [value]="est">{{est.simbolo}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Precio Maximo</mat-label>
+                                <input type="number" matInput [(ngModel)]="precioMayor">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="filtros-avanzados">
+                    <h3 style="text-align: center;">FILTROS AVANZADOS</h3>
+                    <div class="row">
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Dormitorios</mat-label>
+                                <mat-select [(ngModel)]="canDormitorios" multiple="multiple">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Baños</mat-label>
+                                <mat-select [(ngModel)]="canBanios" multiple="multiple">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Cocheras</mat-label>
+                                <mat-select [(ngModel)]="canCocheras" multiple="multiple">
+                                    <mat-option *ngFor="let est of cantidades" [value]="est">{{est}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Area minima m2</mat-label>
+                                <input type="number" matInput [(ngModel)]="areaMinima">
+                            </mat-form-field>
+                        </div>
+                        <div class="col">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Area maxima m2</mat-label>
+                                <input type="number" matInput [(ngModel)]="areaMaxima">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 20px;"></div>
+                <div style="text-align: center;">
+                    <button mat-button (click)="filtro()">Aplicar Filtros
+                        <mat-icon>filter_alt</mat-icon>
+                    </button>
+                    <button mat-button (click)="limpiarfiltros()">Borrar Filtros
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </mat-card>
+            <br><br>
+            <div class="grid-container" name="lista-propiedades">
+                <div class="grid-item" *ngFor="let prop of dataSource.data | paginate: page_size: page_number">
+                    <mat-card class="example-card mat-elevation-z8" style="border-radius: 40px;" (click)="vistasinLog(prop)">
+                        <img mat-card-image src={{prop.foto}} alt="Photo" style="size: cover; max-height: 50%;">
+                        <mat-card-content>
+                            <button mat-raised-button style="background-color: black; color: white; border-radius: 50px;">{{prop.estado.descripcion}}</button> &nbsp; &nbsp;
+                            <button mat-raised-button style="background-color: rgb(202, 97, 12); color: white; border-radius: 50px;">{{prop.tipo.descripcion}}</button>
+                            <br> <br>
+                            <h1><strong>{{prop.titulo}}</strong></h1>
+                            <h2>
+                                <strong>
+                                    <mat-icon>crop_square</mat-icon> {{prop.tamanoArea}} m<sup>2</sup> &nbsp; &nbsp;
+                                    <mat-icon>king_bed</mat-icon> {{prop.dormitorios}} &nbsp; &nbsp;
+                                    <mat-icon>bathtub</mat-icon> {{prop.banios}} &nbsp; &nbsp;
+                                    <mat-icon>directions_car</mat-icon> {{prop.cocheras}} &nbsp; &nbsp;
+                                </strong>
+                            </h2>
+                            <div class="wrapper">
+                                <p class="demo-1">{{prop.descripcion}}</p>
+                            </div>
+                            <h1>
+                                <strong>
+                                    {{prop.moneda.simbolo}} {{prop.precio}} &nbsp;&nbsp;&nbsp;&nbsp; <mat-icon>room
+                                    </mat-icon> {{prop.ubicacion.descripcion}}
+                                </strong>
+                            </h1>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+            <div>
+                <mat-paginator [length]="dataSource.data.length" [pageSize]="page_size" [pageSizeOptions]="[2, 5, 10, 25, 100]" (page)="handlePage($event)" showFirstLastButtons>
+                </mat-paginator>
+            </div>
+        </div>
+        <div *ngIf="vistaEspSinLog">
+            <mat-card class="example-card">
+                <div class="row">
+                    <div class="col">
+                        <mat-grid-list cols="1">
+                            <img mat-card-image src={{propiedadVista.foto}} style="max-width: 100%; padding: 15px;">
+                        </mat-grid-list>
+                        <mat-grid-list cols="2" rowHeight="2:1.5">
+                            <div *ngFor="let detalle of detalles">
+                                <mat-grid-tile>
+                                    <img mat-card-image src={{detalle.foto}} style="padding: 5px;">
+                                </mat-grid-tile>
+                            </div>
+                        </mat-grid-list>
+                        <div style="height: 20px;"></div>
+                        <div>
+                            <h2>Descripcion: </h2>
+                            <h3>{{propiedadVista.descripcion}}</h3>
+                        </div>
+                        <div>
+                            <h2>Comentario: </h2>
+                            <h3>{{propiedadVista.comentario}}</h3>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <mat-card-title>{{propiedadVista.titulo}}</mat-card-title>
+                        <mat-card-subtitle>{{propiedadVista.direccion}} , {{propiedadVista.ubicacion.descripcion}}</mat-card-subtitle>
+                        <mat-card-content>
+                            <mat-card class="precios-card">
+                                <div class="row">
+                                    <div class="col">
+                                        <mat-card>
+                                            <h2>Precio de {{propiedadVista.estado.descripcion}}</h2>
+                                            <h3>{{propiedadVista.moneda.simbolo}} {{propiedadVista.precio}}</h3>
+                                        </mat-card>
+                                    </div>
+                                    <div class="col">
+                                        <mat-card>
+                                            <h2>Precio de mantenimiento</h2>
+                                            <h3>{{propiedadVista.monedamantenimiento.simbolo}} {{propiedadVista.mantenimiento}}</h3>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </mat-card>
+                            <mat-list class="lista-datos-propiedad">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h3><strong>Datos Generales</strong></h3>
+                                        <mat-list-item><span>Area Total:</span> {{propiedadVista.tamanoArea}}m<sup>2</sup></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Area Construida:</span> {{propiedadVista.areaConstruida}}m<sup>2</sup></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Aires:</span> {{propiedadVista.areaAires}}m<sup>2</sup></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Area Ocupada:</span> {{propiedadVista.areaOcupada}}m<sup>2</sup></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                    </div>
+                                    <div class="col-sm">
+                                        <h3><strong>Datos Especificos</strong></h3>
+                                        <mat-list-item><span>Dormitorios</span>
+                                            <mat-icon>king_bed</mat-icon>: {{propiedadVista.dormitorios}} <br></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Baños</span>
+                                            <mat-icon>bathtub</mat-icon>: {{propiedadVista.banios}} <br></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Cocheras</span>
+                                            <mat-icon>directions_car</mat-icon>: {{propiedadVista.cocheras}} <br></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'casa' ">
+                                            <mat-list-item><span>Cantidad de pisos de la casa</span>: {{propiedadVista.cantidadPisos}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'departamento' ">
+                                            <mat-list-item><span>Distribucion</span>: {{propiedadVista.distribucion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Piso en el que se encuentra</span>: {{propiedadVista.pisoPosicion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'local-comercial' ">
+                                            <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}}m<sup>2</sup><br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}}m<sup>2</sup><br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'local-industrial' ">
+                                            <mat-list-item><span>Ambientes</span>: {{propiedadVista.ambientes}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Cantidad de Oficinas</span>: {{propiedadVista.cantidadOficinas}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Techo Tijeral</span>: {{propiedadVista.techoTijeral}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Patio de Maniobras</span>: {{propiedadVista.patioManiobras}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Nave Industrial</span>: {{propiedadVista.naveIndustrial}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'terreno' ">
+                                            <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Izquierda</span>: {{propiedadVista.linderosIzquierda}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Derecha</span>: {{propiedadVista.linderosDerecha}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Perimetro</span>: {{propiedadVista.perimetro}}m<sup>2</sup><br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Frontis</span>: {{propiedadVista.frontis}}m<sup>2</sup> <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Zonificacion</span>: {{propiedadVista.zonificacion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'oficina' ">
+                                            <mat-list-item><span>Ambientes</span>: {{propiedadVista.ambientes}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Oficinas Privadas</span>: {{propiedadVista.oficinasPrivadas}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Salas de Reunion</span>: {{propiedadVista.salasReunion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Estado de Oficina</span>: {{propiedadVista.estadoOficina}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Zonificacion</span>: {{propiedadVista.zonificacion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-list>
+                            <br>
+                            <h2>Contacto</h2>
+                            <mat-card class="agente-card" style="margin: 10px;">
+                                <mat-card-header>
+                                    <mat-card-title>Agente: {{propiedadVista.agente.nombre}} {{propiedadVista.agente.apellido}}</mat-card-title>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <mat-card>
+                                                <img mat-card-image src={{propiedadVista.agente.imagen}} alt="Photo" style="width: 250px; height: 250px; padding: 10px;">
+                                            </mat-card>
+                                        </div>
+                                        <div class="col-sm">
+                                            <mat-list>
+                                                <mat-list-item><strong>Nombre:</strong> {{propiedadVista.agente.nombre}} </mat-list-item>
+                                                <mat-list-item><strong>Apellido:</strong> {{propiedadVista.agente.apellido}}</mat-list-item>
+                                                <mat-list-item><strong>Celular:</strong> {{propiedadVista.agente.celular}}</mat-list-item>
+                                                <mat-list-item><strong>Correo:</strong> {{propiedadVista.agente.correo}}</mat-list-item>
+                                            </mat-list>
+                                        </div>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button style="background-color: lightslategrey;" mat-button (click)="salirvistasinLog()">Regresar</button>
+                        </mat-card-actions>
+                    </div>
+                </div>
+            </mat-card>
+            <mat-card class="example-card">
+                <br><br>
+                <h1 style="font-size: 60px;"><strong>{{propiedadVista.titulo}}</strong></h1><br>
+                <h2>
+                    <strong>
+                        <mat-icon>crop_square</mat-icon> {{propiedadVista.tamanoArea}} m<sup>2</sup> &nbsp; &nbsp;
+                        <mat-icon>king_bed</mat-icon> {{propiedadVista.dormitorios}} &nbsp; &nbsp;
+                        <mat-icon>bathtub</mat-icon> {{propiedadVista.banios}} &nbsp; &nbsp;
+                        <mat-icon>directions_car</mat-icon> {{propiedadVista.cocheras}} &nbsp; &nbsp;
+                    </strong>
+                </h2>
+                <h2>{{propiedadVista.direccion}} , {{propiedadVista.ubicacion.descripcion}}</h2>
+                <div class="row">
+                    <div class="col">
+                        <mat-card style="margin: 5px;">
+                            <img mat-card-image src={{propiedadVista.foto}} style="max-width: 100%; padding: 10px;">
+                        </mat-card>
+                        <div class="row">
+                            <div class="col-md-4" *ngFor="let detalle of detalles">
+                                <mat-card style="margin: 5px;">
+                                    <img mat-card-image src={{detalle.foto}} style="max-width: 100%; max-height: 100%; padding: 5px;">
+                                </mat-card>
+                            </div>
+                        </div>
+                        <div style="height: 20px;"></div>
+                        <div>
+                            <h2>Descripcion: </h2>
+                            <h3>{{propiedadVista.descripcion}}</h3>
+                        </div>
+                        <div>
+                            <h2>Comentario: </h2>
+                            <h3>{{propiedadVista.comentario}}</h3>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <mat-card-content>
+                            <mat-card class="precios-card">
+                                <div class="row">
+                                    <div class="col">
+                                        <mat-card>
+                                            <h2>Precio de {{propiedadVista.estado.descripcion}}</h2>
+                                            <h3>{{propiedadVista.moneda.simbolo}} {{propiedadVista.precio}}</h3>
+                                        </mat-card>
+                                    </div>
+                                    <div class="col">
+                                        <mat-card>
+                                            <h2>Precio de mantenimiento</h2>
+                                            <h3>{{propiedadVista.monedamantenimiento.simbolo}} {{propiedadVista.mantenimiento}}</h3>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </mat-card>
+                            <mat-list class="lista-datos-propiedad">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h3><strong>Datos Generales</strong></h3>
+                                        <mat-list-item><span>Area Total:</span> {{propiedadVista.tamanoArea}}m2</mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Area Construida:</span> {{propiedadVista.areaConstruida}}m2</mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Aires:</span> {{propiedadVista.areaAires}}m2</mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Area Ocupada:</span> {{propiedadVista.areaOcupada}}m2</mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Fecha de Ingreso</span>
+                                            <mat-icon>calendar_today</mat-icon>: {{propiedadVista.fechaIngreso | date}} <br></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Fecha de Actualizacion</span>
+                                            <mat-icon>calendar_today</mat-icon>: {{propiedadVista.fechaIngreso | date}} <br></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                    </div>
+                                    <div class="col-sm">
+                                        <h3><strong>Datos Especificos</strong></h3>
+                                        <mat-list-item><span>Dormitorios</span>
+                                            <mat-icon>king_bed</mat-icon>: {{propiedadVista.dormitorios}} <br></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Baños</span>
+                                            <mat-icon>bathtub</mat-icon>: {{propiedadVista.banios}} <br></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <mat-list-item><span>Cocheras</span>
+                                            <mat-icon>directions_car</mat-icon>: {{propiedadVista.cocheras}} <br></mat-list-item>
+                                        <mat-divider></mat-divider>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'casa' ">
+                                            <mat-list-item><span>Cantidad de pisos de la casa</span>: {{propiedadVista.cantidadPisos}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'departamento' ">
+                                            <mat-list-item><span>Distribucion</span>: {{propiedadVista.distribucion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Piso en el que se encuentra</span>: {{propiedadVista.pisoPosicion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'local-comercial' ">
+                                            <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'local-industrial' ">
+                                            <mat-list-item><span>Ambientes</span>: {{propiedadVista.ambientes}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Cantidad de Oficinas</span>: {{propiedadVista.cantidadOficinas}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Techo Tijeral</span>: {{propiedadVista.techoTijeral}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Patio de Maniobras</span>: {{propiedadVista.patioManiobras}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Nave Industrial</span>: {{propiedadVista.naveIndustrial}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'terreno' ">
+                                            <mat-list-item><span>Linderos Frente</span>: {{propiedadVista.linderosFrente}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Fondo</span>: {{propiedadVista.linderosFondo}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Izquierda</span>: {{propiedadVista.linderosIzquierda}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Linderos Derecha</span>: {{propiedadVista.linderosDerecha}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Perimetro</span>: {{propiedadVista.perimetro}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Frontis</span>: {{propiedadVista.frontis}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Zonificacion</span>: {{propiedadVista.zonificacion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                        <div *ngIf="propiedadVista.tipo.tipo == 'oficina' ">
+                                            <mat-list-item><span>Ambientes</span>: {{propiedadVista.ambientes}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Oficinas Privadas</span>: {{propiedadVista.oficinasPrivadas}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Salas de Reunion</span>: {{propiedadVista.salasReunion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Depositos</span>: {{propiedadVista.depositos}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Estado de Oficina</span>: {{propiedadVista.estadoOficina}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                            <mat-list-item><span>Zonificacion</span>: {{propiedadVista.zonificacion}} <br></mat-list-item>
+                                            <mat-divider></mat-divider>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-list>
+                            <br>
+                            <h2>Contacto</h2>
+                            <mat-card class="agente-card" style="margin: 10px;">
+                                <mat-card-header>
+                                    <mat-card-title>Agente: {{propiedadVista.agente.nombre}}</mat-card-title>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <mat-card>
+                                                <img mat-card-image src={{propiedadVista.agente.imagen}} alt="Photo" style="width: 250px; height: 250px; padding: 10px;">
+                                            </mat-card>
+                                        </div>
+                                        <div class="col-sm">
+                                            <mat-list>
+                                                <mat-list-item><strong>Nombre:</strong> {{propiedadVista.agente.nombre}} </mat-list-item>
+                                                <mat-list-item><strong>Apellido:</strong> {{propiedadVista.agente.apellido}}</mat-list-item>
+                                                <mat-list-item><strong>Celular:</strong> {{propiedadVista.agente.celular}}</mat-list-item>
+                                                <mat-list-item><strong>url Web:</strong> {{propiedadVista.agente.urlWeb}}</mat-list-item>
+                                            </mat-list>
+                                        </div>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                            <mat-card class="cliente-card">
+                                <mat-card-header>
+                                    <mat-card-title>Propietario: {{propiedadVista.cliente.nombre}} {{propiedadVista.cliente.apellido}}</mat-card-title>
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <mat-card>
+                                                    <img mat-card-image src={{propiedadVista.cliente.foto}} alt="Photo" style="width: 250px; height: 250px; padding: 10px;">
+                                                </mat-card>
+                                            </div>
+                                            <div class="col-sm">
+                                                <mat-list>
+                                                    <mat-list-item><strong>Nombre:</strong> {{propiedadVista.cliente.nombre}} </mat-list-item>
+                                                    <mat-list-item><strong>Apellido:</strong> {{propiedadVista.cliente.apellido}}</mat-list-item>
+                                                    <mat-list-item><strong>Celular:</strong> {{propiedadVista.cliente.telefono}}</mat-list-item>
+                                                    <mat-list-item><strong>Correo:</strong> {{propiedadVista.cliente.correo}}</mat-list-item>
+                                                    <mat-list-item><strong>Tipo Cliente:</strong> {{propiedadVista.cliente.estadoCliente}}</mat-list-item>
+                                                </mat-list>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button mat-button (click)="SalirVista()">Regresar</button>
+                        </mat-card-actions>
+                    </div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</div>

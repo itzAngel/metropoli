@@ -1,0 +1,71 @@
+<div *ngIf="loginservice.logged">
+    <div *ngIf="!formAct">
+        <div>
+            <mat-toolbar >
+                <span class="title">ESTADOS</span>
+                <span class="example-spacer"></span>
+                <button mat-button (click)="Agregar()" >Agregar
+                    <mat-icon>add_to_photos</mat-icon>
+                </button>
+            </mat-toolbar>
+        </div>
+        <div class="row">
+            <div class="col-md-4" *ngFor="let obj of arreglo">
+                <mat-card class="example-card">
+                    <mat-card-header>
+                        <mat-card-title>{{obj.estado}}</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                    <p>
+                        idAgencia: {{obj.idEstado}}
+                        <br>
+                        agencia: {{obj.estado}}
+                        <br>
+                        descripcion: {{obj.descripcion}}
+                        <br>
+                    </p>
+                    </mat-card-content>
+                    <mat-card-actions>
+                    <button mat-button (click)="Editar(obj.idEstado)">Editar</button>
+                    <button mat-button (click)="Eliminar(obj)">Eliminar</button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="formAct">
+        <div>
+            <mat-toolbar>
+                <button mat-button (click)="Regresar()">
+                    <mat-icon>undo</mat-icon>Regresar
+                </button>
+                <span>AGREGAR UN ESTADO</span>
+            </mat-toolbar>
+        </div>
+        <div *ngIf="!modal">
+            <mat-card>
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Estado</mat-label>
+                        <input matInput name="tipo" #tipo="ngModel" [(ngModel)]="obj.estado" required>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Descripcion</mat-label>
+                        <input matInput name="descripcion" #descripcion="ngModel" [(ngModel)]="obj.descripcion">
+                    </mat-form-field>
+                </div>
+                <div>
+                    <button *ngIf="!editar" mat-button (click)="Guardar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                        <mat-icon>add</mat-icon>Guardar
+                    </button>
+                    <button *ngIf="editar" mat-button (click)="Actualizar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                        <mat-icon>add</mat-icon>Actualizar
+                    </button>
+                    <button mat-button (click)="Regresar()" style="margin-left: 3%; width: 45%; background-color: red; color: white;">
+                        <mat-icon>west</mat-icon>Cancelar
+                    </button>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</div>

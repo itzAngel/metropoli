@@ -1,0 +1,42 @@
+/*espaciador*/
+.example-spacer {
+    flex: 1 1 auto;
+}
+/*titulos*/
+.title{
+    padding-left: 45%;
+}
+.title2{
+    position: relative;
+    margin-left: 35%;
+}
+/*ancho de formularios*/
+.formu{
+  height: 100%;
+}
+.form1{
+    margin-left: 1.5%;
+    width: 97%;
+}
+.form2{
+    margin-left: 1.5%;
+    width: 48%;
+}
+.form3{
+    margin-left: 1.5%;
+    width: 30%;
+}
+.form4{
+    margin-left: 1.5%;
+    width: 23%;
+}
+/*grid*/
+.grid-container {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	padding: 10px;
+  }
+  .grid-item {
+	padding: 20px;
+	font-size: 30px;
+  }

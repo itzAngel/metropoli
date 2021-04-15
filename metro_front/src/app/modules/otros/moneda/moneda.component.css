@@ -1,0 +1,14 @@
+.example-spacer {
+    flex: 1 1 auto;
+}
+.title{
+    padding-left: 45%;
+}
+.title2{
+    position: relative;
+    margin-left: 35%;
+}
+.mat-form-field{
+    margin-left: 3%;
+    width: 45%;
+}

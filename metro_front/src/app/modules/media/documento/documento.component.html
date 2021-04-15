@@ -1,0 +1,75 @@
+<div *ngIf="loginservice.agente.permisosPerfil == 'administrador'">
+    <div *ngIf="!formAct">
+        <mat-spinner *ngIf="isProgrress" mode="indeterminate">
+            <p style="font-size: 20px; color: white">Eliminando documento...</p>
+        </mat-spinner>
+    <div class="row">
+        <mat-toolbar >
+            <span class="title">DOCUMENTOS</span>
+            <span class="example-spacer"></span>
+            <button mat-button (click)="Agregar()" >Agregar
+                <mat-icon>add_to_photos</mat-icon>
+            </button>
+          </mat-toolbar>
+    </div>
+    <div class="formu">
+        <mat-list >
+            <mat-list-item *ngFor="let documento of documentos">
+              <mat-icon mat-list-icon>folder</mat-icon>
+              <div mat-line>NOMBRE: {{documento.name}}</div>
+              <div mat-line>ID: {{documento.id}} </div>
+              <span class="example-spacer"></span>
+              <div fxLayoutAlign="end">
+                <a href={{documento.documentourl}} download>
+                    <button mat-button style="color: blue;" download>
+                        <mat-icon>download</mat-icon>Descargar
+                    </button>
+                </a>
+                <button mat-button (click)="borrar(documento.id)" style="color: red;">
+                    <mat-icon>delete</mat-icon>Eliminar
+                </button>
+              </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-list>
+    </div>
+    </div>
+    <div *ngIf="formAct">
+    <mat-spinner *ngIf="isProgrress" mode="indeterminate">
+        <p style="font-size: 20px; color: white">Cargando documento...</p>
+    </mat-spinner>
+    <div class="row">
+        <mat-toolbar>
+            <button mat-button (click)="Regresar()">
+                <mat-icon>undo</mat-icon>Regresar
+            </button>
+            <span>AGREGAR UN DOCUMENTO</span>
+        </mat-toolbar>
+    </div>
+    <div class="row">
+        <mat-card fxLayoutAlign="center center" class="formu">
+            <form (ngSubmit)="onUpload()" novalidate enctype="multipart/form-data">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="documento" #documentoInputFile
+                    (change)="onFileChange($event)">
+                    <label class="custom-file-label" for="documento">Elige un documento</label>
+                </div>
+                <div *ngIf="documento" class="mt-5">
+                    <h5>Vista Previa:</h5>
+                    <div>
+                        <img class="document-thumbnail" style="max-width: 100%" [src]="documentoMin">
+                    </div>
+                </div>
+                <div>
+                    <button mat-button type="submit" [disabled]="!documento">
+                        <mat-icon>upload</mat-icon>Subir
+                    </button>
+                    <button mat-button (click)="reset()" [disabled]="!documento" >
+                        <mat-icon>cached</mat-icon>Reset
+                    </button>
+                </div>
+            </form>
+        </mat-card>
+    </div>
+    </div>
+</div>

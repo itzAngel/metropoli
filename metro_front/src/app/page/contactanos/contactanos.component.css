@@ -1,0 +1,33 @@
+/*diseño de pagina*/
+.banner{
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background-color: #F5F5F5;
+    background-size: cover;
+    background-position: center;
+    background-image: url('https://drive.google.com/file/d/1sAb4BXwAg85SeDABQ-PYSAeZ08JYzcHt/view?usp=sharing');
+    background-image: url('../../../assets/img/contacto.jpg');
+}
+/*diseño de objetos*/
+.example-spacer {
+    flex: 1 1 auto;
+}
+.form1{
+    margin-left: 1.5%;
+    width: 97%;
+}
+.form2{
+    margin-left: 1.5%;
+    width: 48%;
+}
+.fondo{
+    background-color: gray;
+}
+.caja{
+    width: 70%;
+    margin-left: 15%;
+}
+.texto-inicial{
+    text-align: center;
+}

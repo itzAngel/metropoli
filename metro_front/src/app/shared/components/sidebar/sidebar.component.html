@@ -1,0 +1,35 @@
+<mat-nav-list>
+    <div *ngIf="service.logged">
+        <div class="profile-card">
+            <div class="header">
+                <h2>{{service.agente.nombre}} {{service.agente.apellido}}</h2>
+                <h4>{{service.agente.correo}}</h4>
+            </div>
+            <img src={{service.agente.imagen}}>
+        </div>
+    </div>
+    <div *ngIf="!service.logged">
+        <span>Inicie sesión</span>
+    </div>
+        <mat-divider></mat-divider>
+        
+        <h2 matSubheader>Modulos</h2>
+        <a mat-list-item routerLinkActive="list-item-active" routerLink="/">Home</a>
+        <a mat-list-item routerLinkActive="list-item-active" routerLink="/agente">Agente</a>
+        <a mat-list-item routerLinkActive="list-item-active" routerLink="/cliente">Cliente</a>
+        <a mat-list-item routerLinkActive="list-item-active" routerLink="/propiedad">Propiedad</a>
+
+        <mat-divider></mat-divider>
+        
+        <h2 matSubheader>Paginas</h2>
+    
+        <a mat-list-item routerLinkActive="list-item-active" routerLink="/contacts">
+            <mat-icon>import_contacts</mat-icon>
+            Sobre nosotros
+        </a>
+    
+        <a mat-list-item routerLinkActive="list-item-active" routerLink="/contactanos">
+            <mat-icon>contact_phone</mat-icon>
+            Contactanos
+        </a>
+</mat-nav-list>

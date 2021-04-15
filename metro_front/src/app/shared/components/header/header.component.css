@@ -1,0 +1,46 @@
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+span {
+    cursor: pointer;
+    padding-left: 3%;
+    padding-right: 3%;
+    color: white;
+    cursor: pointer;
+}
+
+mat-icon {
+    color: white;
+}
+
+.boton {
+    font-size: 30px;
+}
+
+.fa-instagram {
+    color: deeppink;
+}
+
+.fa-linkedin {
+    font-size: 25px;
+    color: white;
+    background-color: steelblue;
+}
+
+.vista-mobile {
+    display: none;
+}
+
+.vista-pc {
+    float: right;
+}
+
+@media (max-width: 952px) {
+    .vista-pc {
+        display: none;
+    }
+    .vista-mobile {
+        display: flex;
+    }
+}

@@ -1,0 +1,71 @@
+<div *ngIf="!formAct">
+    <div>
+        <mat-toolbar >
+            <span class="title">LISTA DE FOTOS</span>
+            <span class="example-spacer"></span>
+            <button mat-button (click)="Agregar()" >Agregar
+                <mat-icon>add_to_photos</mat-icon>
+            </button>
+        </mat-toolbar>
+    </div>
+    <div class="row">
+        <div class="col-md-4" *ngFor="let detalle of detalles">
+            <mat-card class="example-card">
+                <img mat-card-image src={{detalle.foto}} alt="Photo" style="max-width: 400px;">
+                <mat-card-actions>
+                <button mat-button (click)="Eliminar(detalle)">Eliminar</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div style="height: 20px;"></div>
+    </div>
+  </div>
+  <div *ngIf="formAct">
+    <div>
+        <mat-toolbar>
+            <button mat-button (click)="Regresar()">
+                <mat-icon>undo</mat-icon>Regresar
+            </button>
+            <span>AGREGAR UN DETALLE</span>
+        </mat-toolbar>
+    </div>
+        <mat-card>
+        <div>
+            <h4>Escoge una imagen</h4>
+            <mat-progress-bar mode="indeterminate" *ngIf="isProgress"></mat-progress-bar>
+            <form (ngSubmit)="onUpload()" novalidate enctype="multipart/form-data" class="formedia">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="imagen" #imagenInputFile
+                    (change)="onFileChange($event)" accept="image/png, image/jpeg, image/gif">
+                    <label class="custom-file-label" for="imagen">Elige una imagen</label>
+                </div>
+                <div *ngIf="imagen" class="mt-5">
+                    <h5>Vista Previa:</h5>
+                    <div>
+                        <img class="image-thumbnail" style="max-width: 100%" [src]="imagenMin">
+                    </div>
+                </div>
+                <div>
+                    <button mat-button type="submit" [disabled]="!imagen">
+                        <mat-icon>upload</mat-icon>Subir
+                    </button>
+                    <button mat-button (click)="reset()" [disabled]="!imagen" >
+                        <mat-icon>cached</mat-icon>Reset
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div>
+            <button *ngIf="!editar" mat-button (click)="Guardar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                <mat-icon>add</mat-icon>Guardar
+            </button>
+            <button *ngIf="editar" mat-button (click)="Actualizar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                <mat-icon>add</mat-icon>Actualizar
+            </button>
+            <button mat-button (click)="Regresar()" style="margin-left: 3%; width: 45%; background-color: red; color: white;">
+                <mat-icon>west</mat-icon>Cancelar
+            </button>
+        </div>
+        </mat-card>
+  </div>
+  

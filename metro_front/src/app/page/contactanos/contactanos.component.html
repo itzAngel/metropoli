@@ -1,0 +1,160 @@
+<div>
+    <section class="banner">
+        <app-header></app-header>
+    </section>
+    <div *ngIf="loginservice.agente.permisosPerfil == 'administrador'">
+        <div *ngIf="!formAct">
+            <div>
+                <mat-toolbar>
+                    <button mat-button (click)="Mostrar()">Cambiar a mostrar {{variableMuestra}}</button>
+                    <span class="title">Contactos</span>
+                    <span class="example-spacer"></span>
+                    <button mat-button (click)="Agregar()">Agregar
+                        <mat-icon>add_to_photos</mat-icon>
+                    </button>
+                </mat-toolbar>
+            </div>
+            <div>
+                <mat-card class="lista-contactanos">
+                    <div *ngFor="let contacto of contactos">
+                        <mat-card>
+                            <mat-card-header>
+                                <mat-card-title>{{contacto.nombre}}</mat-card-title>
+                            </mat-card-header>
+                            <br>
+                            <br>
+                            <mat-card-content>
+                                <div class="container">
+                                    <mat-list>
+                                        <mat-list-item><strong>Nombre:</strong> {{contacto.nombre}} </mat-list-item>
+                                        <mat-list-item><strong>Celular:</strong> {{contacto.celular}}</mat-list-item>
+                                        <mat-list-item><strong>Correo:</strong> {{contacto.correo}}</mat-list-item>
+                                        <mat-list-item><strong>Mensaje:</strong> {{contacto.mensaje}}</mat-list-item>
+                                        <mat-list-item><strong>Habilitado:</strong> {{contacto.habilitado}}</mat-list-item>
+                                    </mat-list>
+                                </div>
+                            </mat-card-content>
+                            <mat-card-actions *ngIf="loginservice.agente.permisosPerfil == 'administrador'">
+                                <button mat-button (click)="cambiarEstado(contacto)">Cambiar Estado Habilitado</button>
+                                <button mat-button (click)="Editar(contacto)">Editar</button>
+                                <button mat-button (click)="Eliminar(contacto)">Eliminar</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+        <div *ngIf="formAct">
+            <div>
+                <mat-toolbar>
+                    <button mat-button (click)="Regresar()">
+                        <mat-icon>undo</mat-icon>Regresar
+                    </button>
+                    <span>AGREGAR UN CLIENTE</span>
+                    <span class="example-spacer"></span>
+                </mat-toolbar>
+            </div>
+            <div>
+                <mat-card>
+                    <div>
+                        <mat-form-field appearance="fill" class="form1">
+                            <mat-label>Nombres</mat-label>
+                            <input matInput type="text" name="nombre" #nombre="ngModel" [(ngModel)]="contacto.nombre" required>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field appearance="fill" class="form1">
+                            <mat-label>Correo</mat-label>
+                            <input matInput type="text" name="correo" #correo="ngModel" [(ngModel)]="contacto.correo" required>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="fill" class="form1">
+                            <mat-label>Celular</mat-label>
+                            <input matInput type="text" name="celular" #celular="ngModel" [(ngModel)]="contacto.celular" required>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field appearance="fill" class="form1">
+                        <mat-label>Habilitado</mat-label>
+                        <mat-select [(ngModel)]="contacto.habilitado">
+                            <mat-option *ngFor="let per of arreglo" [value]="per">{{per}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div>
+                        <mat-form-field appearance="fill" class="form1" style="height: 50px;">
+                            <mat-label>Comentario</mat-label>
+                            <textarea matInput name="comentario" #comentario="ngModel" [(ngModel)]="contacto.mensaje"></textarea>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <button *ngIf="!editar" mat-button (click)="Guardar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                                <mat-icon>add</mat-icon>Guardar
+                            </button>
+                        <button *ngIf="editar" mat-button (click)="Actualizar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                                <mat-icon>add</mat-icon>Actualizar
+                            </button>
+                        <button mat-button (click)="Regresar()" style="margin-left: 3%; width: 45%; background-color: red; color: white;">
+                                <mat-icon>west</mat-icon>Cancelar
+                            </button>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="loginservice.agente.permisosPerfil != 'administrador'">
+        <mat-card class="fondo">
+            <mat-card class="caja">
+                <div class="texto-inicial">
+                    <h4 style="color: mediumaquamarine;">Estamos aqui para ayudarte</h4>
+                    <h1 style="color: black">Contáctanos</h1>
+                    <h4 style="color: gray">¿Quieres vender o alquilar tu propiedad, o tienes alguna otra consulta? Escríbenos por WhatsApp, email o llena el formulario y con mucho gusto te atenderemos.</h4>
+                </div>
+                <div class="row" style="color: gray">
+                    <div class="col">
+                        <div>
+                            <mat-form-field appearance="fill" class="form1">
+                                <mat-label>Nombres</mat-label>
+                                <input matInput type="text" name="nombre" #nombre="ngModel" [(ngModel)]="contacto.nombre">
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill" class="form1">
+                                <mat-label>Correo</mat-label>
+                                <input matInput type="text" name="correo" #correo="ngModel" [(ngModel)]="contacto.correo">
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill" class="form1">
+                                <mat-label>Celular</mat-label>
+                                <input matInput type="text" name="celular" #celular="ngModel" [(ngModel)]="contacto.celular">
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill" class="form1" style="height: 50px;">
+                                <mat-label>Comentario</mat-label>
+                                <textarea matInput name="comentario" #comentario="ngModel" [(ngModel)]="contacto.mensaje"></textarea>
+                            </mat-form-field>
+                        </div>
+                        <div style="height: 20px;"></div>
+                        <div>
+                            <button mat-button (click)="EnviarForm()" style="margin-left: 3%; width: 45%; background-color: grey; color: white;">Enviar Formulario</button>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <p>
+                            <mat-icon>phone_iphone</mat-icon>
+                            Móvil <br> (51) 989 009 295
+                        </p>
+                        <p>
+                            <mat-icon>email</mat-icon>
+                            Correo electrónico <br>
+                            <a href="info@metropoli.com.pe">info@metropoli.com.pe</a>
+                        </p>
+                        <p>
+                            <mat-icon>room</mat-icon>
+                            Dirección <br> Calle Las Gaviotas 122, Surquillo.
+                        </p>
+                    </div>
+                </div>
+            </mat-card>
+        </mat-card>
+    </div>
+</div>

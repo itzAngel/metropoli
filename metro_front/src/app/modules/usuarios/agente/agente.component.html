@@ -1,0 +1,159 @@
+<div *ngIf="loginservice.logged">
+    <div *ngIf="loginservice.agente.permisosPerfil == 'administrador' ">
+        <div *ngIf="!formAct">
+            <div>
+                <mat-toolbar >
+                    <span class="title">AGENTES</span>
+                    <span class="example-spacer"></span>
+                    <button mat-button (click)="Agregar()" >Agregar
+                        <mat-icon>add_to_photos</mat-icon>
+                    </button>
+                </mat-toolbar>
+            </div>
+            <mat-card class="lista-agentes">
+                <div class="grid-container">
+                    <div class="grid-item" *ngFor="let agente of agentes | paginate: page_size: page_number">
+                        <mat-card class="example-card">
+                            <mat-card-header>
+                                <mat-card-title>{{agente.nombre}}</mat-card-title>
+                                <mat-card-subtitle>{{agente.permisosPerfil}}</mat-card-subtitle>
+                            </mat-card-header>
+                            <div fxFlex fxLayout="row" >
+                                <img mat-card-image src={{agente.imagen}} alt="Photo" style="width: 250px; height: 250px;">
+                            </div>
+                            <mat-card-content>
+                                <p>
+                                    Nombre: {{agente.nombre}}
+                                    <br>
+                                    Apellido: {{agente.apellido}}
+                                    <br>
+                                    Celular: {{agente.celular}}
+                                    <br>
+                                    url Web: {{agente.urlWeb}}
+                                    <br>
+                                    Comentario: {{agente.comentario}}
+                                </p>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button mat-button (click)="Editar(agente.idAgente)">Editar</button>
+                                <button mat-button (click)="Eliminar(agente)">Eliminar</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                    <mat-paginator [length]="agentes.length"
+                                    [pageSize]="page_size"
+                                    [pageSizeOptions]="[5, 10, 25, 100]"
+                                    (page)="handlePage($event)" showFirstLastButtons>
+                    </mat-paginator>
+                </div>
+            </mat-card>
+        </div>
+        <div *ngIf="formAct">
+            <div>
+                <mat-toolbar>
+                    <button mat-button (click)="Regresar()">
+                        <mat-icon>undo</mat-icon>Regresar
+                    </button>
+                    <span>AGREGAR UN AGENTE</span>
+                </mat-toolbar>
+            </div>
+            <div *ngIf="!modal">
+                <mat-card>
+                    <div>
+                        <mat-form-field appearance="fill" class="form2">
+                        <mat-label>Correo</mat-label>
+                        <input matInput type="email" name="correo" #correo="ngModel" [(ngModel)]="agente.correo" required>
+                        </mat-form-field>
+                    
+                        <mat-form-field appearance="fill" class="form2">
+                            <mat-label>Contraseña</mat-label>
+                            <input matInput type="password" name="contrasena" #contrasena="ngModel" [(ngModel)]="agente.contrasena" required>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field appearance="fill" class="form2">
+                        <mat-label>Nombre</mat-label>
+                        <input matInput type="text" name="nombre" #nombre="ngModel" [(ngModel)]="agente.nombre" required>
+                        </mat-form-field>
+                    
+                        <mat-form-field appearance="fill" class="form2">
+                            <mat-label>Apellido</mat-label>
+                            <input matInput type="text" name="apellido" #apellido="ngModel" [(ngModel)]="agente.apellido" required>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field appearance="fill" class="form2">
+                        <mat-label>URL Web</mat-label>
+                        <input matInput type="text" name="urlWeb" #urlWeb="ngModel" [(ngModel)]="agente.urlWeb">
+                        </mat-form-field>
+                    
+                        <mat-form-field appearance="fill" class="form2">
+                        <mat-label>Permisos de agente</mat-label>
+                        <mat-select name="permi" #permi="ngModel" [(ngModel)]="agente.permisosPerfil">
+                            <mat-option *ngFor="let per of permisos" [value]="per.value">{{per.viewValue}}</mat-option>
+                        </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field appearance="fill" class="form2">
+                        <mat-label>Celular</mat-label>
+                        <input matInput type="text" name="celular" #celular="ngModel" [(ngModel)]="agente.celular" required>
+                        </mat-form-field>
+                    
+                        <mat-form-field appearance="fill" class="form2">
+                            <mat-label>Comentario</mat-label>
+                            <textarea matInput type="text" name="comentario" #comentario="ngModel" [(ngModel)]="agente.comentario"></textarea>
+                        </mat-form-field>
+                        
+                    </div>
+                    <div>
+                        <mat-progress-bar mode="indeterminate" *ngIf="isProgress"></mat-progress-bar>
+                        <div *ngIf="editar">
+                            <span>Foto Actual</span>
+                            <br>
+                            <img src={{agente.imagen}} style="max-width: 500px;">
+                        </div>
+                        <form (ngSubmit)="onUpload()" novalidate enctype="multipart/form-data">
+                            <div class="custom-file" *ngIf="mostrarFoto">
+                                <input type="file" class="custom-file-input" id="imagen" #imagenInputFile
+                                (change)="onFileChange($event)" accept="image/png, image/jpeg, image/gif">
+                                <label class="custom-file-label" for="imagen">Elige una imagen</label>
+                            </div>
+                            <div *ngIf="imagen" class="mt-5">
+                                <h5>Vista Previa:</h5>
+                                <div>
+                                    <img class="image-thumbnail" style="max-width: 100%" [src]="imagenMin">
+                                </div>
+                            </div>
+                            <div>
+                                <button mat-button type="submit" [disabled]="!imagen">
+                                    <mat-icon>upload</mat-icon>Subir
+                                </button>
+                                <button mat-button (click)="reset()" [disabled]="!imagen" >
+                                    <mat-icon>cached</mat-icon>Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <button *ngIf="!editar" mat-button (click)="Guardar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                            <mat-icon>add</mat-icon>Guardar
+                        </button>
+                        <button *ngIf="editar" mat-button (click)="Actualizar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                            <mat-icon>add</mat-icon>Actualizar
+                        </button>
+                        <button mat-button (click)="Regresar()" style="margin-left: 3%; width: 45%; background-color: red; color: white;">
+                            <mat-icon>west</mat-icon>Cancelar
+                        </button>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="loginservice.agente.permisosPerfil != 'administrador' ">
+        <span>Lo sentimos, usted no cuenta con los permisos para acceder a esta informacion</span>
+    </div>
+</div>
+<div *ngIf="!loginservice.logged">
+    <span>Inicie sesión</span>
+</div>

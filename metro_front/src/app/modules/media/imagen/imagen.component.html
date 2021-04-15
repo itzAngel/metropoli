@@ -1,0 +1,82 @@
+<div *ngIf="loginservice.agente.permisosPerfil == 'administrador'">
+    <div *ngIf="!formAct">
+        <mat-spinner *ngIf="isProgrress" mode="indeterminate">
+            <p style="font-size: 20px; color: white">Eliminando imagen...</p>
+        </mat-spinner>
+    <div class="row">
+        <mat-toolbar >
+            <span class="title">FOTOS</span>
+            <span class="example-spacer"></span>
+            <button mat-button (click)="Agregar()" >Agregar
+                <mat-icon>add_to_photos</mat-icon>
+            </button>
+          </mat-toolbar>
+    </div>
+    <div class="row">
+        <div class="col-md-4" *ngFor="let imagen of imagenes; index as i">
+            <div class="card mb-3 animated zoomIn">
+                <h3 class="card-header">{{imagen.name}}</h3>
+                <div class="card-body">
+                  <h5 class="card-title"><b>ID: </b>{{imagen.id}}</h5>
+                </div>
+                <div class="card-body text-center">
+                <img style="height: 200px; width: 100%; display: block;" src="{{imagen.imagenurl}}" alt="Card image">
+                </div>
+                
+                <div class="card-body d-flex justify-content-between">
+                    <a href={{imagen.imagenurl}} download>
+                        <button mat-button style="color: blue;" download>
+                            <mat-icon>download</mat-icon>Descargar
+                        </button>
+                    </a>
+                    <button mat-button (click)="borrar(imagen.id)" style="color: red;">
+                        <mat-icon>delete</mat-icon>Eliminar
+                    </button>
+                </div>
+                <div class="card-footer text-center">
+                  &copy; Metropoli
+                </div>
+              </div>
+            
+        </div>
+    </div>
+</div>
+<div *ngIf="formAct">
+    <mat-spinner *ngIf="isProgrress" mode="indeterminate">
+        <p style="font-size: 20px; color: white">Cargando imagen...</p>
+    </mat-spinner>
+    <div class="row">
+        <mat-toolbar>
+            <button mat-button (click)="Regresar()">
+                <mat-icon>undo</mat-icon>Regresar
+            </button>
+            <span>AGREGAR UNA FOTO</span>
+        </mat-toolbar>
+    </div>
+    <div class="row">
+        <mat-card fxLayoutAlign="center center" class="formu">
+            <form (ngSubmit)="onUpload()" novalidate enctype="multipart/form-data">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="imagen" #imagenInputFile
+                    (change)="onFileChange($event)" accept="image/png, image/jpeg, image/gif">
+                    <label class="custom-file-label" for="imagen">Elige una imagen</label>
+                </div>
+                <div *ngIf="imagen" class="mt-5">
+                    <h5>Vista Previa:</h5>
+                    <div>
+                        <img class="image-thumbnail" style="max-width: 100%" [src]="imagenMin">
+                    </div>
+                </div>
+                <div>
+                    <button mat-button type="submit" [disabled]="!imagen">
+                        <mat-icon>upload</mat-icon>Subir
+                    </button>
+                    <button mat-button (click)="reset()" [disabled]="!imagen" >
+                        <mat-icon>cached</mat-icon>Reset
+                    </button>
+                </div>
+            </form>
+        </mat-card>
+    </div>
+</div>
+</div>

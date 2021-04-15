@@ -1,0 +1,59 @@
+<mat-toolbar color="primary" class="sticky" style="background: transparent;">
+    <mat-toolbar-row>
+        <img routerLink="/home" src="../../../../assets/img/Metropoli-Logo-horizonta.png" style="cursor:pointer; max-width: 30%;">
+        <div class="vista-pc" style="margin-left: 35%;">
+            <span routerLink="/home">Inicio</span>
+            <span *ngIf="authService.isUserLoggedIn()" routerLink="/cliente">
+                Clientes
+            </span>
+            <span routerLink="/propiedad">Propiedades</span>
+            <span routerLink="/servicios">Servicios</span>
+            <span routerLink="/contactanos">Contacto</span>
+            <button mat-icon-button class="boton">
+                <a href="https://www.facebook.com/metropoliagentes" target="_blank"><i class="fab fa-facebook"></i></a>
+            </button>
+            <button mat-icon-button class="boton">
+                <a href="https://www.instagram.com/metropoliperu/" target="_blank"><i class="fab fa-instagram"></i></a>
+            </button>
+            <button mat-icon-button class="boton">
+                <a href="https://www.linkedin.com/company/metropoliperu/" target="_blank"><i
+                        class="fab fa-linkedin"></i></a>
+            </button>
+            <button mat-icon-button class="boton" *ngIf="!authService.isUserLoggedIn()">
+                <mat-icon [matMenuTriggerFor]="menu">person_outline</mat-icon>
+            </button>
+            <button mat-icon-button class="boton" *ngIf="authService.isUserLoggedIn()">
+                {{loginservice.agente.nombre}}<mat-icon [matMenuTriggerFor]="menu">expand_more</mat-icon>
+            </button>
+        </div>
+        <div class="vista-mobile" style="margin-left: 60%;">
+            <button mat-icon-button class="boton">
+                <mat-icon [matMenuTriggerFor]="menuTodo">menu</mat-icon>
+            </button>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>
+<!-- Menu Items -->
+<mat-menu #menu="matMenu" fxLayoutAlign="end">
+    <button mat-menu-item *ngIf="!authService.isUserLoggedIn()" routerLink="/login">Login</button>
+    <button mat-menu-item *ngIf="authService.isUserLoggedIn()" routerLink="/logout">Cerrar Sesion</button>
+</mat-menu>
+
+<mat-menu #menuTodo="matMenu" fxLayoutAlign="end">
+    <button mat-menu-item routerLink="/home">Inicio</button>
+    <button mat-menu-item *ngIf="authService.isUserLoggedIn()" routerLink="/cliente">Clientes</button>
+    <button mat-menu-item routerLink="/propiedad">Propiedades</button>
+    <button mat-menu-item routerLink="/servicios">Servicios</button>
+    <button mat-menu-item routerLink="/contactanos">Contacto</button>
+    <button mat-menu-item class="boton">
+        <a href="https://www.facebook.com/metropoliagentes" target="_blank"><i class="fab fa-facebook"></i></a>
+    </button>
+    <button mat-menu-item class="boton">
+        <a href="https://www.instagram.com/metropoliperu/" target="_blank"><i class="fab fa-instagram"></i></a>
+    </button>
+    <button mat-menu-item class="boton">
+        <a href="https://www.linkedin.com/company/metropoliperu/" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </button>
+    <button mat-menu-item *ngIf="!authService.isUserLoggedIn()" routerLink="/login">Login</button>
+    <button mat-menu-item *ngIf="authService.isUserLoggedIn()" routerLink="/logout">Cerrar Sesion</button>
+</mat-menu>

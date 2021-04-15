@@ -1,0 +1,162 @@
+/*diseño de pagina*/
+
+.banner {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: #F5F5F5;
+    background-size: cover;
+    background-position: center;
+    transition: all .1s ease-out;
+    animation: banner 20s infinite linear;
+    background-image: url('https://drive.google.com/file/d/17jJL5qG9LdrVoXwUBRMnbvjVAo4FKt1D/view?usp=sharing');
+}
+
+.banner-esp {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: #F5F5F5;
+    background-size: cover;
+    background-position: center;
+}
+
+@keyframes banner {
+    0% {
+        background-image: url('../../../../assets/img/banner-propiedad-1.jpg');
+    }
+    25% {
+        background-image: url('../../../../assets/img/banner-propiedad-1.jpg');
+    }
+    26% {
+        background-image: url('../../../../assets/img/banner-propiedad-2.jpg');
+    }
+    50% {
+        background-image: url('../../../../assets/img/banner-propiedad-2.jpg');
+    }
+    51% {
+        background-image: url('../../../../assets/img/banner-propiedad-3.jpg');
+    }
+    75% {
+        background-image: url('../../../../assets/img/banner-propiedad-3.jpg');
+    }
+    76% {
+        background-image: url('../../../../assets/img/banner-propiedad-4.jpg');
+    }
+    100% {
+        background-image: url('../../../../assets/img/banner-propiedad-4.jpg');
+    }
+}
+
+
+/*espaciador*/
+
+.example-spacer {
+    flex: 1 1 auto;
+}
+
+
+/*titulos*/
+
+.title {
+    padding-left: 45%;
+}
+
+.title2 {
+    position: relative;
+    margin-left: 35%;
+}
+
+
+/*ancho de formularios*/
+
+.formu {
+    height: 100%;
+}
+
+.form1 {
+    margin-left: 1.5%;
+    width: 97%;
+}
+
+.form2 {
+    margin-left: 1.5%;
+    width: 48%;
+}
+
+.form3 {
+    margin-left: 1.5%;
+    width: 30%;
+}
+
+.form4 {
+    margin-left: 1.5%;
+    width: 23%;
+}
+
+
+/*grid*/
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+}
+
+.grid-item {
+    text-align: center;
+    padding: 20px;
+    font-size: 30px;
+}
+
+@media only screen and (max-width: 900px) {
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto;
+        padding: 10px;
+    }
+}
+
+
+/*barra de busqueda*/
+
+.mat-form-field-bus {
+    font-size: 14px;
+    width: 100%;
+}
+
+
+/*estilos de tabla*/
+
+table {
+    width: 100%;
+}
+
+tr.example-detail-row {
+    height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+    background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+}
+
+.example-element-row td {
+    border-bottom-width: 0;
+}
+
+.example-element-detail {
+    overflow: hidden;
+    display: flex;
+}
+
+.example-element-description {
+    padding: 16px;
+}
+
+.example-element-description-attribution {
+    opacity: 0.5;
+}

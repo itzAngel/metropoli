@@ -1,0 +1,17 @@
+/*espaciador*/
+.example-spacer {
+    flex: 1 1 auto;
+  }
+  /*titulos*/
+  .title{
+    padding-left: 45%;
+  }
+  .title2{
+    position: relative;
+    margin-left: 35%;
+  }
+  /*ancho de formularios*/
+  .form1{
+    margin-left: 1.5%;
+    width: 97%;
+  }

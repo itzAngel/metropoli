@@ -1,0 +1,21 @@
+<div *ngIf="!isLoginOK" fxFlex fxLayoutAlign="center center" style="margin-top: 200px; margin-bottom: 150px;">
+    <div fxLayout="row">
+          <mat-card>
+            <mat-form-field appearance="fill">
+            <mat-label>Usuario</mat-label>
+            <input type="text" matInput [(ngModel)]="usu" name="usuario">
+            </mat-form-field>
+            <br>
+            <mat-form-field appearance="fill">
+            <mat-label>Enter your password</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="pass" name="contrasena">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            </mat-form-field>
+            <br>
+            <button mat-button color="primary" (click)="IniciarSesion()">Iniciar Sesion</button>
+            <button mat-button color="primary" routerLink="/home">Pagina principal</button>
+        </mat-card>
+    </div>
+</div>

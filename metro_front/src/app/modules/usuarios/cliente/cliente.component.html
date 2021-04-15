@@ -1,0 +1,340 @@
+<div>
+
+    <section class="banner">
+        <app-header></app-header>
+    </section>
+    <div *ngIf="loginservice.isUserLoggedIn()">
+        <div *ngIf="!formAct">
+            <div>
+                <mat-toolbar>
+                    <span class="title">CLIENTE</span>
+                    <span class="example-spacer"></span>
+                    <button mat-button (click)="Agregar()">Agregar
+                        <mat-icon>add_to_photos</mat-icon>
+                    </button>
+                </mat-toolbar>
+            </div>
+            <div *ngIf="!vistaEsp">
+                <mat-card class="filtros">
+                    <div>
+                        <h3 style="text-align: center;">FILTROS </h3>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <mat-checkbox class="checkbo" [(ngModel)]="filtroComprador">Comprador</mat-checkbox>
+                                <br>
+                                <mat-checkbox class="checkbo" [(ngModel)]="filtroVendedor">Vendedor</mat-checkbox>
+                            </div>
+                            <div class="col">
+                                <mat-form-field class="busqueda">
+                                    <input matInput placeholder="Buscar por nombre" name="filterPost" [(ngModel)]="filterPost">
+                                </mat-form-field>
+                            </div>
+                            <div class="col">
+                                <mat-form-field class="busqueda">
+                                    <input matInput placeholder="Buscar por empresa" [(ngModel)]="filterPost2">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div style="text-align: center;">
+                            <button mat-button (click)="filtro()">Aplicar Filtros
+                                <mat-icon>filter_alt</mat-icon>
+                            </button>
+                            <button mat-button (click)="limpiarFiltros()">Borrar Filtros
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </mat-card>
+                <br><br>
+                <mat-card class="lista-clientes">
+                    <div class="grid-container">
+                        <div class="grid-item" *ngFor="let cliente of clientes | paginate: page_size: page_number">
+                            <mat-card>
+                                <mat-card-header>
+                                    <mat-card-title>{{cliente.nombre}} {{cliente.apellido}}</mat-card-title>
+                                </mat-card-header>
+                                <br>
+                                <br>
+                                <mat-card-content>
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col">
+                                                <img mat-card-image (click)="VistaEspecifica(cliente)" src={{cliente.foto}} alt="Photo" style="max-width: 300px;">
+                                            </div>
+                                            <div class="col">
+                                                <mat-list>
+                                                    <mat-list-item><strong>Nombre:</strong> {{cliente.nombre}} </mat-list-item>
+                                                    <mat-list-item><strong>Apellido:</strong> {{cliente.apellido}}</mat-list-item>
+                                                    <mat-list-item><strong>Celular:</strong> {{cliente.telefono}}</mat-list-item>
+                                                    <mat-list-item><strong>Correo:</strong> {{cliente.correo}}</mat-list-item>
+                                                    <mat-list-item><strong>Agente Captador:</strong> {{cliente.agente.nombre}} {{cliente.agente.apellido}}</mat-list-item>
+                                                    <mat-list-item><strong>Tipo Cliente:</strong> {{cliente.estadoCliente}}</mat-list-item>
+                                                    <mat-list-item><strong>Modo de captacion:</strong> {{cliente.modoCaptacion}}</mat-list-item>
+                                                    <mat-list-item><strong>Empresa:</strong> {{cliente.empresa}}</mat-list-item>
+                                                    <mat-list-item><strong>Fecha de ingreso:</strong> {{cliente.fechaIngreso | date}}</mat-list-item>
+                                                    <mat-list-item><strong>Fecha de actualizacion:</strong> {{cliente.fechaActualizacion | date}}</mat-list-item>
+                                                    <mat-list-item><strong>Comentario:</strong> {{cliente.comentario}}</mat-list-item>
+                                                </mat-list>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </mat-card-content>
+                                <mat-card-actions>
+                                    <button mat-button (click)="Editar(cliente.idCliente)">Editar</button>
+                                    <button mat-button (click)="Eliminar(cliente)">Eliminar</button>
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
+                    </div>
+                    <mat-paginator [length]="clientes.length" [pageSize]="page_size" [pageSizeOptions]="[5, 10, 25, 100]" (page)="handlePage($event)" showFirstLastButtons>
+                    </mat-paginator>
+                </mat-card>
+            </div>
+            <div *ngIf="vistaEsp">
+                <mat-card class="example-card">
+                    <mat-card-header>
+                        <div mat-card-avatar class="example-header-image"></div>
+                        <mat-card-title>{{clienteVista.nombre}} {{clienteVista.apellido}}</mat-card-title>
+                        <mat-card-subtitle>{{clienteVista.estadoCliente}}</mat-card-subtitle>
+                    </mat-card-header>
+                    <img mat-card-image src={{clienteVista.foto}} style="max-width: 100%;">
+                    <mat-card-content>
+                        <mat-list>
+                            <mat-list-item><strong>Nombre:</strong> {{clienteVista.nombre}} </mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Apellido:</strong> {{clienteVista.apellido}}</mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Celular:</strong> {{clienteVista.telefono}}</mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Correo:</strong> {{clienteVista.correo}}</mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Captador:</strong> {{clienteVista.agente.nombre}} {{clienteVista.agente.apellido}}</mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Tipo Cliente:</strong> {{clienteVista.estadoCliente}}</mat-list-item>
+                        </mat-list>
+                        <span>Preferencia del Cliente</span>
+                        <mat-list>
+                            <mat-list-item><strong>Tipo:</strong> {{clienteVista.preferencia.tipo.descripcion}} </mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Ubicacion:</strong> {{clienteVista.preferencia.ubicacion.descripcion}}</mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Estado:</strong> {{clienteVista.preferencia.estado.descripcion}}</mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Precio Mayor:</strong> {{clienteVista.preferencia.preciomayor}} {{clienteVista.preferencia.monedamayor.moneda}}</mat-list-item>
+                            <mat-divider></mat-divider>
+                            <mat-list-item><strong>Precio Menor:</strong> {{clienteVista.preferencia.preciomenor}} {{clienteVista.preferencia.monedamenor.moneda}}</mat-list-item>
+                        </mat-list>
+                    </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-button (click)="SalirVista()">Regresar</button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+        </div>
+        <div *ngIf="formAct">
+            <div>
+                <mat-toolbar>
+                    <button mat-button (click)="Regresar()">
+                        <mat-icon>undo</mat-icon>Regresar
+                    </button>
+                    <span>AGREGAR UN CLIENTE</span>
+                    <span class="example-spacer"></span>
+                </mat-toolbar>
+            </div>
+            <div *ngIf="!modal">
+                <div>
+                    <mat-card>
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Nombres</mat-label>
+                                <input matInput type="text" name="nombre" #nombre="ngModel" [(ngModel)]="cliente.nombre" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill">
+                                <mat-label>Apellidos</mat-label>
+                                <input matInput type="text" name="apellido" #apellido="ngModel" [(ngModel)]="cliente.apellido" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill">
+                                <mat-label>Estado de cliente</mat-label>
+                                <mat-select name="estado" #estado="ngModel" [(value)]="selected" [(ngModel)]="cliente.estadoCliente" (ngModelChange)="cambiarPreferencia()">
+                                    <mat-option *ngFor="let est of estadosCliente" [value]="est.value">{{est.viewValue}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Telefono</mat-label>
+                                <input matInput type="text" name="telefono" #telefono="ngModel" [(ngModel)]="cliente.telefono">
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill">
+                                <mat-label>Correo</mat-label>
+                                <input matInput type="email" name="correo" #correo="ngModel" [(ngModel)]="cliente.correo" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill">
+                                <mat-label>Agente</mat-label>
+                                <mat-select name="agente" #agente="ngModel" [(ngModel)]="cliente.agente.idAgente">
+                                    <mat-option *ngFor="let est of agentes" [value]="est.idAgente">{{est.nombre}} {{est.apellido}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>DNI</mat-label>
+                                <input matInput type="text" name="dni" #dni="ngModel" [(ngModel)]="cliente.dni" required>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Fecha de Ingreso</mat-label>
+                                <input matInput [matDatepicker]="picker" [(ngModel)]="cliente.fechaIngreso" disabled>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                            <mat-form-field class="example-full-width">
+                                <mat-label>Fecha de Actualizacion</mat-label>
+                                <input matInput [matDatepicker]="picker2" [(ngModel)]="cliente.fechaActualizacion" datetime="dd-MM-yyyy" disabled>
+                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                <mat-datepicker #picker2></mat-datepicker>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field appearance="fill">
+                                <mat-label>Modo de captacion</mat-label>
+                                <input matInput type="text" name="modoCaptacion" #modoCaptacion="ngModel" [(ngModel)]="cliente.modoCaptacion" required>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="fill">
+                                <mat-label>Empresa</mat-label>
+                                <input matInput type="text" name="empresa" #empresa="ngModel" [(ngModel)]="cliente.empresa" required>
+                            </mat-form-field>
+                        </div>
+                        <div style="height: 50px;"></div>
+                        <div fxLayout="row">
+                            <mat-progress-bar mode="indeterminate" *ngIf="isProgress"></mat-progress-bar>
+                            <div *ngIf="editar">
+                                <span>Foto Actual</span>
+                                <br>
+                                <img src={{cliente.foto}} style="max-width: 500px;">
+                            </div>
+                            <form (ngSubmit)="onUpload()" novalidate enctype="multipart/form-data">
+                                <div class="custom-file" *ngIf="mostrarFoto">
+                                    <input type="file" class="custom-file-input" id="imagen" #imagenInputFile (change)="onFileChange($event)" accept="image/png, image/jpeg, image/gif">
+                                    <label class="custom-file-label" for="imagen">Elige una imagen</label>
+                                </div>
+                                <div *ngIf="imagen" class="mt-5">
+                                    <h5>Vista Previa:</h5>
+                                    <div>
+                                        <img class="image-thumbnail" style="max-width: 100%" [src]="imagenMin">
+                                    </div>
+                                </div>
+                                <div>
+                                    <button mat-button type="submit" [disabled]="!imagen">
+                                        <mat-icon>upload</mat-icon>Subir
+                                    </button>
+                                    <button mat-button (click)="reset()" [disabled]="!imagen">
+                                        <mat-icon>cached</mat-icon>Reset
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div style="height: 50px;"></div>
+                        <div *ngIf="mostrarPreferencia">
+                            <h2>PREFERENCIA</h2>
+                            <div>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>tipoInmueble</mat-label>
+                                    <mat-select name="tipo" #tipo="ngModel" [(ngModel)]="preferencia.tipo.idTipo">
+                                        <mat-option *ngFor="let tip of tipos" [value]="tip.idTipo">
+                                            {{tip.descripcion}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="fill">
+                                    <mat-label>estado</mat-label>
+                                    <mat-select name="estado" #estado="ngModel" [(ngModel)]="preferencia.estado.idEstado">
+                                        <mat-option *ngFor="let tip of estados" [value]="tip.idEstado">
+                                            {{tip.descripcion}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="fill">
+                                    <mat-label>ubicacion</mat-label>
+                                    <mat-select name="ubicacion" #ubicacion="ngModel" [(ngModel)]="preferencia.ubicacion.idUbicacion">
+                                        <mat-option *ngFor="let tip of ubicaciones" [value]="tip.idUbicacion">
+                                            {{tip.descripcion}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <h3>Precio Menor</h3>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Moneda</mat-label>
+                                    <mat-select name="precioMenormoneda" #precioMenormoneda="ngModel" [(ngModel)]="preferencia.monedamenor.idMoneda">
+                                        <mat-option *ngFor="let per of monedas" [value]="per.idMoneda">
+                                            {{per.moneda}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Cantidad</mat-label>
+                                    <input matInput type="number" name="precioMenorcantidad" #precioMenorcantidad="ngModel" [(ngModel)]="preferencia.preciomenor">
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                <h3>Precio Mayor</h3>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Moneda</mat-label>
+                                    <mat-select name="precioMayormoneda" #precioMayormoneda="ngModel" [(ngModel)]="preferencia.monedamayor.idMoneda">
+                                        <mat-option *ngFor="let per of monedas" [value]="per.idMoneda">
+                                            {{per.moneda}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Cantidad</mat-label>
+                                    <input matInput type="number" name="precioMayormoneda" #precioMayormoneda="ngModel" [(ngModel)]="preferencia.preciomayor">
+                                </mat-form-field>
+                            </div>
+                            <button *ngIf="!editar" mat-button (click)="GuardarPreferencia()">
+                                <mat-icon>add</mat-icon>Guardar Preferencia
+                            </button>
+                            <button *ngIf="editar" mat-button (click)="GuardarPreferencia()">
+                                <mat-icon>add</mat-icon>Actualizar Preferencia
+                            </button>
+                            <button mat-button (click)="LimpiarPreferencia()">
+                                <mat-icon>west</mat-icon>Limpiar 
+                            </button>
+                        </div>
+                        <div style="height: 20px;"></div>
+                        <div>
+                            <mat-form-field appearance="fill" style="width: 90%; margin-left: 5%;">
+                                <mat-label>Comentario</mat-label>
+                                <textarea matInput name="comentario" #comentario="ngModel" [(ngModel)]="cliente.comentario"></textarea>
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <button *ngIf="!editar" mat-button (click)="Guardar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                                <mat-icon>add</mat-icon>Guardar
+                            </button>
+                            <button *ngIf="editar" mat-button (click)="Actualizar()" style="margin-left: 3%; width: 45%; background-color: green; color: white;">
+                                <mat-icon>add</mat-icon>Actualizar
+                            </button>
+                            <button mat-button (click)="Regresar()" style="margin-left: 3%; width: 45%; background-color: red; color: white;">
+                                <mat-icon>west</mat-icon>Cancelar
+                            </button>
+                        </div>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!loginservice.isUserLoggedIn()">
+        <span>Inicie sesión</span>
+    </div>
+</div>

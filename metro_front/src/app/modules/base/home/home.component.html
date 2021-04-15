@@ -1,0 +1,290 @@
+<div>
+    <section class="banner">
+        <app-header></app-header>
+        <div class="banner-content">
+            <section class="barra-busqueda">
+                <mat-form-field class="selec">
+                    <mat-label>¿Busco?</mat-label>
+                    <mat-select [(ngModel)]="propiedadService.estadoBarra" multiple="multiple">
+                        <mat-option *ngFor="let est of estados" [value]="est">{{est.descripcion}}</mat-option>
+                    </mat-select>
+                </mat-form-field>&nbsp;&nbsp;&nbsp;
+                <mat-form-field class="selec">
+                    <mat-label>¿En donde?</mat-label>
+                    <mat-select [(ngModel)]="propiedadService.ubicacionBarra" multiple="multiple">
+                        <mat-option *ngFor="let est of ubicaciones" [value]="est">{{est.descripcion}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>&nbsp;&nbsp;&nbsp;
+                <mat-form-field class="selec">
+                    <mat-label>Tipo</mat-label>
+                    <mat-select [(ngModel)]="propiedadService.tipoBarra" multiple="multiple">
+                        <mat-option *ngFor="let est of tipos" [value]="est">{{est.descripcion}}</mat-option>
+                    </mat-select>
+                </mat-form-field>&nbsp;&nbsp;&nbsp;
+                <button mat-flat-button color="red" style="background: linear-gradient(90deg,rgb(16, 39, 52)0%,   rgb(223, 77, 67)100%); border-radius: 30px; color: white;" (click)="PropBusqueda()">Buscar</button>
+            </section>
+            <section class="barra-busqueda-mobile">
+                <mat-form-field class="selec">
+                    <mat-label>¿Busco?</mat-label>
+                    <mat-select [(ngModel)]="propiedadService.estadoBarra" multiple="multiple">
+                        <mat-option *ngFor="let est of estados" [value]="est">{{est.descripcion}}</mat-option>
+                    </mat-select>
+                </mat-form-field><br>
+                <mat-form-field class="selec">
+                    <mat-label>¿En donde?</mat-label>
+                    <mat-select [(ngModel)]="propiedadService.ubicacionBarra" multiple="multiple">
+                        <mat-option *ngFor="let est of ubicaciones" [value]="est">{{est.descripcion}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field><br>
+                <mat-form-field class="selec">
+                    <mat-label>Tipo</mat-label>
+                    <mat-select [(ngModel)]="propiedadService.tipoBarra" multiple="multiple">
+                        <mat-option *ngFor="let est of tipos" [value]="est">{{est.descripcion}}</mat-option>
+                    </mat-select>
+                </mat-form-field><br>
+                <button mat-flat-button color="red" style="background: linear-gradient(90deg, black 0%, red 100%); border-radius: 30px; color: white;" (click)="PropBusqueda()">Buscar</button>
+            </section>
+            <br>
+            <button mat-raised-button class="ver-propiedades" routerLink="/contactanos">Quiero publicar mi inmueble</button>
+        </div>
+    </section>
+    <div class="conocenos">
+        <h1><strong>Conócenos</strong></h1>
+        <br> <br>
+        <p style="width: 60%; text-align: center;">
+            Estamos presente en Lima y provincias creando espacios de trabajo, vivienda y negocio, donde nuestros clientes pueden hacer realidad sus objetivos. <br> <br> Contamos con más de 10 años en el rubro inmobiliario, implementando las últimas innovaciones
+            en tecnología para así poder ofrecer un servicio de primera, el cual va de la mano con nuestro compromiso y una atención personalizada hacia nuestros clientes. <br> <br> Nos avalan una gran cartera de clientes y las principales redes de Agentes
+            del país. <br><br> Ofrecemos respaldo, garantía, compromiso y confianza en todas nuestras operaciones. <br>
+            <br>
+        </p>
+        <br> <br><br><br>
+        <a href="https://drive.google.com/file/d/1UEIDUoFmPdwDEQgR_2aYpOuVvfW8sBSY/view?usp=sharing" target="_blank" download>
+            <button mat-button class="descarga-dossier"></button>
+        </a>
+    </div>
+    <div class="estadisticas">
+        <div class="row" style="text-align: center;">
+            <div class="col">
+                <div style="display: inline-flex;">
+                    <h1>+</h1>
+                    <h1 id='añosMercado'> 0 </h1>
+                </div>
+                <h2>Años en el mercado</h2>
+            </div>
+            <div class="col">
+                <div style="display: inline-flex;">
+                    <h1>+</h1>
+                    <h1 id='clientesCartera'> 0 </h1>
+                </div>
+                <h2>Clientes en cartera</h2>
+            </div>
+            <div class="col">
+                <div style="display: inline-flex;">
+                    <h1>+</h1>
+                    <h1 id='propiedadesGestionadas'> 0 </h1>
+                    <br>
+                </div>
+                <h2>Años en el mercado</h2>
+            </div>
+        </div>
+    </div>
+    <div class="ultimas-oportunidades">
+        <h1 style="font-size: 50px; color: black; text-align: center; padding-top: 5%; padding-bottom: 1%;">
+            <strong>Ultimas Oportunidades</strong>
+        </h1>
+        <h1 style="font-size: 22px; color: grey; text-align: center;">Encuentra aquí, el inmueble que tanto buscas</h1>
+        <br><br>
+        <div class="grid-container" name="lista-propiedades">
+            <div class="grid-item" *ngFor="let prop of propiedades | paginate: page_size: page_number">
+                <mat-card class="example-card mat-elevation-z8" style="border-radius: 40px; height: 600px;">
+                    <img mat-card-image src={{prop.foto}} alt="Photo" style="size: cover; height: 50%;">
+                    <mat-card-content>
+                        <span style="color: red;"><strong>{{prop.estado.descripcion}}</strong> &nbsp; &nbsp; - &nbsp; &nbsp;
+                        <strong>{{prop.tipo.descripcion}}</strong></span>
+                        <br> <br>
+                        <h1><strong>{{prop.titulo}}</strong></h1>
+                        <h2 style="text-align: center; align-items: center; justify-content: center; align-content: center;">
+                            <strong>
+                                <mat-icon>border_style</mat-icon> {{prop.tamanoArea}} m<sup>2</sup> &nbsp; &nbsp;
+                                <mat-icon>king_bed</mat-icon> {{prop.dormitorios}} &nbsp; &nbsp;
+                                <mat-icon>bathtub</mat-icon> {{prop.banios}} &nbsp; &nbsp;
+                                <mat-icon>directions_car</mat-icon> {{prop.cocheras}} &nbsp; &nbsp;
+                            </strong>
+                        </h2>
+                        <div class="wrapper">
+                            <p class="demo-1">{{prop.descripcion}}</p>
+                        </div>
+                        <br>
+                        <h1>
+                            <strong>
+                                {{prop.moneda.simbolo}} {{prop.precio}} &nbsp;&nbsp;&nbsp;&nbsp; <mat-icon>room
+                                </mat-icon> {{prop.ubicacion.descripcion}}
+                            </strong>
+                        </h1>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
+        <br><br>
+        <div>
+            <mat-paginator [length]="propiedades.length" [pageSize]="page_size" (page)="handlePage($event)" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </div>
+    <div class="servicios">
+        <h1 style="padding-top: 4%; font-size: 25px;">Tus necesidades</h1>
+        <h1 style="font-size: 50px; font-weight: bold; padding-bottom: 3%;">Nuestros Servicios</h1>
+        <section class="row">
+            <div>
+                <span>Seguridad</span> <br><br><br>
+                <p>Sabemos que la seguridad es muy importante, por ellos realizamos una precalificación de los clientes potenciales, un agente asociado siempre lo acompañará y presentará su inmueble a clientes potenciales previamente evaluados.</p>
+                <br>
+                <button mat-button (click)="Contacto()" class="saber-mas">Saber Mas</button>
+            </div>
+            <div>
+                <span>Asesoría Legal y Financiera</span><br><br><br>
+                <p>Evaluación Comparativa del precio de mercado, Análisis previo de la documentación realizado por especialistas en Derecho Inmobiliario, Redacción y revisión de documentos inmobiliarios tanto para el cliente comprador como para el vendedor.</p>
+                <br>
+                <button mat-button (click)="Contacto()" class="saber-mas">Saber Mas</button>
+            </div>
+        </section>
+        <section class="row">
+            <div>
+                <span>Gestión</span><br><br><br>
+                <p>Realizamos todos los trámites requeridos ante Bancos, Registros, Notarías, Alcaldías, Infocorp y SUNAT para comprar, vender o alquilar su inmueble.</p>
+                <br>
+                <button mat-button (click)="Contacto()" class="saber-mas">Saber Mas</button>
+            </div>
+            <div>
+                <span>Marketing</span><br><br><br>
+                <p>Anunciamos y promocionamos su inmueble en Medios Impresos, Internet y Rótulos para la promoción oportuna de su inmueble, además de redes sociales y los principales Grupos de Agentes del Mercado.
+                </p>
+                <br>
+                <button mat-button (click)="Contacto()" class="saber-mas">Saber Mas</button>
+            </div>
+        </section>
+        <section class="row">
+            <div>
+                <span>Seguimiento</span><br><br><br>
+                <p>Desde el inicio hasta el final de la operación inmobiliaria adquirimos el compromiso de asegurar a nuestro cliente una transacción transparente, segura y satisfactoria.</p>
+                <br>
+                <button mat-button (click)="Contacto()" class="saber-mas">Saber Mas</button>
+            </div>
+            <div>
+                <span>Búsqueda Especializada</span><br><br><br>
+                <p>Gracias a que pertenecemos a las principales redes del sector inmobiliario, podemos garantizar y ofrecer un diverso catálogo de propiedades inmobiliarias que se adecuen a sus necesidades.</p>
+                <br>
+                <button mat-button (click)="Contacto()" class="saber-mas">Saber Mas</button>
+            </div>
+        </section>
+    </div>
+    <div class="aliados">
+        <h1>Nuestros Aliados</h1>
+        <div class="aliados-slider">
+            <carousel cellsToShow=4 loop=true autoplay=true autoplayInterval=2000 lightDOM=true>
+                <div class="carousel-cell">
+                    <img src="../../../../assets/img/adondevivir-200.png" style="max-width:100%;width:auto;height:auto;">
+                </div>
+                <div class="carousel-cell">
+                    <img src="../../../../assets/img/hol-200-e1608013721107.png" style="max-width:100%;width:auto;height:auto;">
+                </div>
+                <div class="carousel-cell">
+                    <img src="../../../../assets/img/laencontre-200.png" style="max-width:100%;width:auto;height:auto;">
+                </div>
+                <div class="carousel-cell">
+                    <img src="../../../../assets/img/net4house-200-e1608013745279.png" style="max-width:100%;width:auto;height:auto;">
+                </div>
+                <div class="carousel-cell">
+                    <img src="../../../../assets/img/nexo-agentes-blanco.png" style="max-width:100%;width:auto;height:auto;">
+                </div>
+                <div class="carousel-cell">
+                    <img src="../../../../assets/img/olx-200-e1608013700526.png" style="max-width:100%;width:auto;height:auto;">
+                </div>
+                <div class="carousel-cell">
+                    <img src="../../../../assets/img/Properati-200.png" style="max-width:100%;width:auto;height:auto;">
+                </div>
+            </carousel>
+        </div>
+    </div>
+    <div class="contactanos">
+        <h1 style="font-size: 60px; font-weight: bold; padding-top: 5%;">Contáctanos</h1>
+        <h1 style="font-size: 20px;">Estamos para servirte</h1>
+        <div class="row">
+            <div class="col" style="padding-top: 5%;">
+                <mat-form-field class="form1">
+                    <mat-label>Nombres</mat-label>
+                    <input matInput [(ngModel)]="contacto.nombre">
+                </mat-form-field>
+
+                <mat-form-field class="form1">
+                    <mat-label>Correo</mat-label>
+                    <input matInput name="correo" #correo="ngModel" [(ngModel)]="contacto.correo">
+                </mat-form-field>
+
+                <mat-form-field class="form1">
+                    <mat-label>Celular</mat-label>
+                    <input matInput [(ngModel)]="contacto.celular">
+                </mat-form-field>
+
+                <mat-form-field class="form1">
+                    <mat-label>Comentario</mat-label>
+                    <textarea matInput style="height: 50px;" [(ngModel)]="contacto.mensaje"></textarea>
+                </mat-form-field>
+
+                <div style="height: 20px;"></div>
+                <div>
+                    <button mat-button (click)="EnviarForm()" style="background-color: black; color: white; border-radius: 25px;">Enviar Formulario</button>
+                </div>
+            </div>
+            <div class="col" style="font-size: 15px; padding: 3%; justify-content: center; text-align: start;">
+                <h2 style="padding-top: 4%;color: white;">Tenemos varias formas de ponernos en contacto, envíanos un correo o llena el formulario y te responderemos a la brevedad.</h2>
+                <div style="padding-top: 5%; width: 30%; color: white;">
+                    <span>
+                        <mat-icon>phone_iphone</mat-icon>
+                        (51) 989 009 295
+                    </span>
+                    <br><br>
+                    <span>
+                        <mat-icon>email</mat-icon>
+                        <a href="info@metropoli.com.pe">info@metropoli.com.pe</a>
+                    </span>
+                    <br><br>
+                    <span>
+                        <mat-icon>room</mat-icon>
+                        Calle Germán Schreiber 276, Oficina 240 - San Isidro, Lima, Perú - Edificio Schreiber Business
+                        Center
+                    </span>
+                </div>
+                <br> <br><br><br><br>
+                <button mat-button class="boton">
+                    <a href="https://www.facebook.com/metropoliagentes" target="_blank"><i
+                            class="fab fa-facebook"></i></a>
+                </button>
+                <button mat-button class="boton">
+                    <a href="https://www.instagram.com/metropoliperu/" target="_blank"><i
+                            class="fab fa-instagram"></i></a>
+                </button>
+                <button mat-button class="boton">
+                    <a href="https://www.linkedin.com/company/metropoliperu/" target="_blank"><i
+                            class="fab fa-linkedin"></i></a>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="protocolos">
+        <div class="row" style="color: white;">
+            <div class="grid-item">
+                <h1 style="padding-top: 18%; padding-right: 40%; font-size: 25px;text-align: right;">
+                    Conoce un poco mas sobre nuestro Protocolo de Seguridad Sanitaria</h1>
+            </div>
+            <div class="grid-item">
+                <a href="https://drive.google.com/file/d/1UEIDUoFmPdwDEQgR_2aYpOuVvfW8sBSY/view?usp=sharing" target="_blank" download>
+                    <button mat-button style="background-color: white; color: black; border-radius: 25px;">Haz click
+                        aqui</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
